@@ -1,10 +1,11 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import './index.css' // Conecta los estilos de tu paleta de colores
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+// Buscamos el contenedor 'root' de tu index.html e inyectamos React allí
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>,
 )
