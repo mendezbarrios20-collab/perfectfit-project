@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 // 1. Importamos tus páginas reales desde la carpeta pages
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
+import Contact from './pages/Contact';
 
 // 2. Componentes temporales que siguen pendientes por desarrollar en los próximos pasos
 const Recommender = () => <div className="container" style={{padding: '2rem'}}><h1>🤖 Recomendador de IA</h1><p>Encuentra tu plato ideal según tus objetivos.</p></div>;
-const Contact = () => <div className="container" style={{padding: '2rem'}}><h1>✉️ Contáctanos</h1><p>Envíanos tus sugerencias o pedidos desde la web.</p></div>;
 const Login = () => <div className="container" style={{padding: '2rem'}}><h1>🔑 Ingreso Administrador</h1><p>Inicia sesión de forma segura al panel de gestión.</p></div>;
 
 function App() {
@@ -27,10 +27,10 @@ function App() {
         {/* Rutas reales conectadas a tus componentes de la carpeta pages */}
         <Route path="/" element={<Home />} />
         <Route path="/catalogo" element={<Catalog />} />
+        <Route path="/contacto" element={<Contact />} />
         
         {/* Rutas con componentes temporales */}
         <Route path="/recomendador" element={<Recommender />} />
-        <Route path="/contacto" element={<Contact />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
