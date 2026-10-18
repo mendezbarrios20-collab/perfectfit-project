@@ -1,111 +1,114 @@
+/* ==========================================================================
+   VARIABLES DE DISEÑO PERSONALIZADAS - PERFECTFIT BOWL
+   ========================================================================== */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* Tus Rosas Aesthetic (Ideales para Bowls, Smoothies y Postres) */
+  --rose-dark: #eb9ac0;
+  --rose-medium: #f3aacb;
+  --rose-light: #f7bfd8;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Tus Azules Frescos (Perfectos para la frescura y limpieza del negocio) */
+  --blue-dark: #a2c7e7;
+  --blue-medium: #bcd5ef;
+  --blue-light: #d4e9ff;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Tus Amarillos Enérgicos (Representan vitalidad y la categoría Pre-Entreno) */
+  --yellow-dark: #ffff83;
+  --yellow-medium: #fefda6;
+  --yellow-light: #fffec4;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* Tus Verdes Saludables (Representan lo orgánico, fit y Post-Entreno) */
+  --green-dark: #47855b;
+  --green-medium: #82c294;
+  --green-light: #bcf4cb;
+
+  /* Colores de soporte para textos y fondos */
+  --text-dark: #2d3748;
+  --bg-light: #fefefe;
+  --white: #ffffff;
+
+  /* Tus Tipografías Elegidas (Conectadas desde el index.html) */
+  --font-title: 'Playfair Display', serif;   /* Elegancia para títulos principales */
+  --font-body: 'Montserrat', sans-serif;    /* Modernidad para descripciones y catálogo */
+  --font-nav: 'Nunito', sans-serif;          /* Fluidez para menús, botones e inputs */
+
+  /* Efectos visuales modernos */
+  --shadow-soft: 0 8px 24px rgba(162, 199, 231, 0.15); /* Sombra suave usando tu azul */
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-body {
+/* ==========================================================================
+   RESET / REGLAS GENERALES
+   ========================================================================== */
+* {
   margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+  padding: 0;
   box-sizing: border-box;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+h1, h2, h3, h4 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--text-dark);
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+a {
+  text-decoration: none;
+  color: inherit;
+  font-family: var(--font-nav);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* Contenedor responsivo estándar para centrar el contenido */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   COMPONENTES INTERACTIVOS REUTILIZABLES (Botones con tu paleta)
+   ========================================================================== */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  font-family: var(--font-nav);
+  font-weight: 700;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+/* Botón principal usando tus tonos rosas (cambia a tu verde al pasar el mouse) */
+.btn-primary {
+  background-color: var(--rose-dark);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(235, 154, 192, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(71, 133, 91, 0.3);
+}
+
+/* Botón secundario usando tus tonos azules (cambia a tu amarillo al pasar el mouse) */
+.btn-secondary {
+  background-color: var(--blue-dark);
+  color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+  background-color: var(--yellow-dark);
+  transform: translateY(-2px);
 }
