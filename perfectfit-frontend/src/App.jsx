@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 
-// 1. IMPORTACIÓN DE TODAS TUS PÁGINAS REALES (Carpeta pages)
+// Importación de tus páginas reales
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import Contact from './pages/Contact';
@@ -11,18 +11,27 @@ import Login from './pages/Login';
 function App() {
   return (
     <Router>
-      {/* Navbar o Menú superior con tus colores corporativos */}
-      <nav style={{ background: 'var(--blue-medium)', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <Link to="/" style={{ fontWeight: 'bold', fontFamily: 'var(--font-nav)' }}>Inicio</Link>
-        <Link to="/catalogo" style={{ fontFamily: 'var(--font-nav)' }}>Catálogo</Link>
-        <Link to="/recomendador" style={{ fontFamily: 'var(--font-nav)' }}>IA Nutrición</Link>
-        <Link to="/contacto" style={{ fontFamily: 'var(--font-nav)' }}>Contacto</Link>
-        <Link to="/login" style={{ marginLeft: 'auto', fontFamily: 'var(--font-nav)', fontWeight: 'bold' }}>Admin</Link>
+      {/* Navbar Superior Modernizada */}
+      <nav style={{ 
+        background: 'var(--white)', 
+        padding: '1.2rem 2rem', 
+        display: 'flex', 
+        gap: '2rem', 
+        alignItems: 'center',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000
+      }}>
+        <NavLink to="/" className="nav-link-custom" style={({ isActive }) => ({ fontWeight: isActive ? '700' : '400' })}>Inicio</NavLink>
+        <NavLink to="/catalogo" className="nav-link-custom">Catálogo</NavLink>
+        <NavLink to="/recomendador" className="nav-link-custom">IA Nutrición</NavLink>
+        <NavLink to="/contacto" className="nav-link-custom">Contacto</NavLink>
+        <NavLink to="/login" className="nav-link-custom" style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin</NavLink>
       </nav>
 
-      {/* Selector Inteligente de Pantallas */}
+      {/* Selector de Pantallas */}
       <Routes>
-        {/* Todas tus rutas conectadas a tus componentes de producción */}
         <Route path="/" element={<Home />} />
         <Route path="/catalogo" element={<Catalog />} />
         <Route path="/contacto" element={<Contact />} />

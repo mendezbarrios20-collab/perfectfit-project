@@ -112,3 +112,43 @@ a {
   background-color: var(--yellow-dark);
   transform: translateY(-2px);
 }
+
+/* ==========================================================================
+   MEJORAS ESTILOS NAVBAR DINÁMICO (PASO 41)
+   ========================================================================== */
+.nav-link-custom {
+  position: relative;
+  font-family: var(--font-nav);
+  font-weight: 500;
+  color: var(--text-dark);
+  padding: 0.5rem 0;
+  transition: var(--transition);
+}
+
+.nav-link-custom:hover {
+  color: var(--rose-dark);
+}
+
+/* La línea mágica debajo del botón activo */
+.nav-link-custom::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--rose-dark);
+  transition: var(--transition);
+  border-radius: 2px;
+}
+
+/* Cuando la ruta coincide exactamente, la línea se expande al 100% */
+.nav-link-custom.active {
+  color: var(--rose-dark);
+  font-weight: 700;
+}
+
+.nav-link-custom.active::after {
+  width: 100%;
+}
+
