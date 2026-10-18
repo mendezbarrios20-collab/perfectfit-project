@@ -5,9 +5,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import Contact from './pages/Contact';
+import Recommender from './pages/Recommender';
 
-// 2. Componentes temporales que siguen pendientes por desarrollar en los próximos pasos
-const Recommender = () => <div className="container" style={{padding: '2rem'}}><h1>🤖 Recomendador de IA</h1><p>Encuentra tu plato ideal según tus objetivos.</p></div>;
+// 2. Componente temporal restante (Se actualizará en el próximo paso)
 const Login = () => <div className="container" style={{padding: '2rem'}}><h1>🔑 Ingreso Administrador</h1><p>Inicia sesión de forma segura al panel de gestión.</p></div>;
 
 function App() {
@@ -28,9 +28,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/catalogo" element={<Catalog />} />
         <Route path="/contacto" element={<Contact />} />
-        
-        {/* Rutas con componentes temporales */}
         <Route path="/recomendador" element={<Recommender />} />
+        
+        {/* Ruta con componente temporal restante */}
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
