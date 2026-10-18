@@ -1,10 +1,10 @@
 import React from 'react';
-import { Flame, ShieldCheck, Clock, Award } from 'lucide-react';
+import { Flame, ShieldCheck, Clock } from 'lucide-react';
 
 function Home() {
   return (
     <div className="home-page">
-      {/* 🏋️ SECCIÓN HERO (Presentación Principal) */}
+      {/* 🏋️ SECCIÓN HERO */}
       <header style={{
         background: 'linear-gradient(135deg, var(--blue-light) 0%, var(--rose-light) 100%)',
         padding: '5rem 0',
@@ -33,8 +33,8 @@ function Home() {
         </div>
       </header>
 
-      {/* 🌟 SECCIÓN DE BENEFICIOS / PROPUESTA DE VALOR */}
-      <section style={{ padding: '5rem 0', backgroundColor: var(--white) }}>
+      {/* 🌟 SECCIÓN DE BENEFICIOS */}
+      <section style={{ padding: '5rem 0', backgroundColor: 'var(--white)' }}>
         <div className="container">
           <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '3rem' }}>
             ¿Por qué elegirnos?
@@ -45,7 +45,6 @@ function Home() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
             gap: '2.5rem' 
           }}>
-            {/* Beneficio 1 */}
             <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: 'var(--border-radius)', boxShadow: 'var(--shadow-soft)' }}>
               <div style={{ display: 'inline-block', padding: '1rem', backgroundColor: 'var(--blue-medium)', borderRadius: '50%', marginBottom: '1rem' }}>
                 <Clock size={32} color="var(--text-dark)" />
@@ -54,7 +53,6 @@ function Home() {
               <p style={{ fontSize: '0.95rem' }}>Comida Grab & Go lista para acompañar tus responsabilidades laborales o académicas.</p>
             </div>
 
-            {/* Beneficio 2 */}
             <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: 'var(--border-radius)', boxShadow: 'var(--shadow-soft)' }}>
               <div style={{ display: 'inline-block', padding: '1rem', backgroundColor: 'var(--yellow-medium)', borderRadius: '50%', marginBottom: '1rem' }}>
                 <Flame size={32} color="var(--text-dark)" />
@@ -63,7 +61,6 @@ function Home() {
               <p style={{ fontSize: '0.95rem' }}>Platos clasificados para tus desayunos, snacks, antes o después de entrenar duro.</p>
             </div>
 
-            {/* Beneficio 3 */}
             <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: 'var(--border-radius)', boxShadow: 'var(--shadow-soft)' }}>
               <div style={{ display: 'inline-block', padding: '1rem', backgroundColor: 'var(--green-medium)', borderRadius: '50%', marginBottom: '1rem' }}>
                 <ShieldCheck size={32} color="var(--white)" />
