@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 
-// 📷 IMPORTACIÓN DE IMÁGENES CON TUS NOMBRES EXACTOS DE ARCHIVO
-import imgArrozInflado from '../assets/images/Arroz Inflado con Mantequilla de Maní y Banano.jpg';
-import imgArrozCurry from '../assets/images/Arroz Jasmín con Pechuga de Pavo al Curry y Piña.jpg';
-import imgBarritas from '../assets/images/Barritas Energéticas de Dátiles y Café.jpg';
-import imgGarbanzos from '../assets/images/Bocaditos de Garbanzos Crujientes.jpg';
-import imgAcai from '../assets/images/Bowl de Acaí y Kéfir.jpg';
-import imgSalmon from '../assets/images/Bowl de Quinoa, Salmón y Edamame.jpg';
-import imgMuffins from '../assets/images/Muffins de Huevo, Espinaca y Pavo.jpg';
-import imgPancakes from '../assets/images/Pancakes de Banano y Avena.jpg';
-import imgParfait from '../assets/images/Parfait de Yogur Griego y Cerezas Ácidas con un toque de miel cruda.jpg';
-import imgPudin from '../assets/images/Pudín de Chía y Coco con Colágeno.jpg';
-import imgSmoothie from '../assets/images/Smoothie Cremoso de Proteína, Camote y Canela.jpg';
-import imgTostada from '../assets/images/Toast de Masa Madre con Aguacate y Huevo Poché.jpg';
-import imgWaffles from '../assets/images/Waffles de Yuca y Clara de Huevo.jpg';
+// 📷 IMPORTACIÓN DE IMÁGENES CON TUS NOMBRES CONFIGURADOS
+import imgArrozInflado from '../assets/images/ArrozInflado.jpg';
+import imgArrozCurry from '../assets/images/ArrozCurry.jpg';
+import imgBarritas from '../assets/images/Barritas.jpg';
+import imgGarbanzos from '../assets/images/Garbanzos.jpg';
+import imgAcai from '../assets/images/Acai.jpg';
+import imgSalmon from '../assets/images/Salmon.jpg';
+import imgMuffins from '../assets/images/Muffins.jpg';
+import imgPancakes from '../assets/images/Pancakes.jpg';
+import imgParfait from '../assets/images/parfait.jpg';
+import imgPudin from '../assets/images/Pudin.jpg';
+import imgSmoothie from '../assets/images/Smoothie.jpg';
+import imgTostada from '../assets/images/Tostada.jpg';
+import imgWaffles from '../assets/images/Waffles.jpg'; // Ubicada en la raíz de assets
 
-// ⚠️ ATENCIÓN A LAS EXTENSIONES DIFERENTES (.jpeg y .avif)
-import imgAvena from '../assets/images/Overnight Oats de Proteína.jpeg';
-import imgTrufas from '../assets/images/Trufas de Almendra y Matcha.jpeg';
-import imgWrap from '../assets/images/Wrap de Pollo, Hummus y Espinaca.avif';
+// ⚠️ EXTENSIONES ESPECIALES (.jpeg y .avif)
+import imgAvena from '../assets/images/Avena.jpeg';
+import imgTrufas from '../assets/images/Trufas.jpeg';
+import imgWrap from '../assets/images/Wrap.avif';
 
 const inicialProducts = [
   /* 🍳 1. DESAYUNOS */
