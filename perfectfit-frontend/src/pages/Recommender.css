@@ -1,0 +1,139 @@
+/* Estilos Exclusivos de la Página del Recomendador IA */
+.recommender-page {
+  position: relative;
+  isolation: isolate;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  padding: clamp(2.5rem, 6vw, 5rem) 1rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.recommender-page * {
+  box-sizing: border-box;
+}
+
+/* Capa oscura protectora de fondo */
+.recommender-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%);
+  z-index: -1;
+}
+
+/* Contenedor principal de la sección */
+.recommender-container {
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* Formularios y Selectores */
+.recommender-glass-form {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: clamp(1.25rem, 5vw, 3rem);
+  border-radius: 30px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  margin-bottom: 3rem;
+}
+
+.recommender-page input:focus,
+.recommender-page select:focus {
+  outline: 2px solid var(--rose-dark, #c65c8b);
+  outline-offset: 2px;
+}
+
+/* Tarjetas de Recomendación */
+.recommendation-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1.8rem;
+  border-radius: 20px;
+  border-left: 6px solid var(--rose-dark);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* Encabezados y precios internos de las tarjetas */
+.recommendation-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.recommendation-heading h3 {
+  flex: 1 1 220px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.recommendation-price {
+  flex: 0 1 auto;
+  overflow-wrap: anywhere;
+  font-weight: 800;
+  color: var(--green-dark);
+  font-size: 1.15rem;
+  font-family: var(--font-nav);
+}
+
+/* Alertas de error o resultados vacíos */
+.recommender-alert-box {
+  background: rgba(255, 254, 196, 0.95);
+  backdrop-filter: blur(10px);
+  color: var(--text-dark);
+  padding: 1.8rem;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.7;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  border: 1px solid var(--yellow-dark);
+}
+
+/* Animaciones y Accesibilidad */
+@keyframes recommenderFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommendation-results {
+  animation: recommenderFadeIn 0.5s ease;
+}
+
+@media (max-width: 480px) {
+  .recommendation-card {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recommender-page *,
+  .recommender-page *::before,
+  .recommender-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

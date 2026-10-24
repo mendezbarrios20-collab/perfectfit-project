@@ -1,0 +1,117 @@
+/* ==========================================================================
+   ESTILOS EXCLUSIVOS DEL COMPONENTE FOOTER (FOOTER.CSS)
+   ========================================================================== */
+
+.perfectfit-footer {
+  background-color: #1a202c; 
+  color: #ffffff; 
+  padding: 4rem 2rem 2rem 2rem; 
+  border-top: 4px solid #eb9ac0; 
+  margin-top: 5rem; 
+  width: 100%; 
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+}
+
+.footer-grid {
+  max-width: 1200px; 
+  margin: 0 auto; 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  gap: 3rem;
+}
+
+/* Bloque del Logo e Identidad */
+.footer-brand-box {
+  display: flex; 
+  align-items: center; 
+  gap: 0.6rem; 
+  margin-bottom: 1.2rem;
+}
+
+.footer-logo-img {
+  height: 35px; 
+  width: auto; 
+  border-radius: 50%; 
+  background: white; 
+  padding: 2px;
+}
+
+.footer-brand-title {
+  font-size: 1.2rem; 
+  color: #f3aacb; 
+  margin: 0; 
+  font-weight: 700;
+}
+
+.footer-text-justify {
+  color: #a0aec0; 
+  font-size: 0.9rem; 
+  line-height: 1.6; 
+  margin: 0; 
+  text-align: justify;
+}
+
+/* Títulos de las Columnas */
+.footer-column-title {
+  color: #ffffff; 
+  margin-bottom: 1.2rem; 
+  border-bottom: 2px solid #a2c7e7; 
+  padding-bottom: 0.5rem; 
+  display: inline-block; 
+  font-weight: 600;
+}
+
+/* Enlaces de Navegación */
+.footer-links-container {
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.5rem; 
+  font-size: 0.9rem;
+}
+
+.footer-link-item {
+  color: #a0aec0; 
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-link-item:hover {
+  color: var(--rose-medium);
+  transform: translateX(3px);
+}
+
+/* Textos informativos de horarios y sedes */
+.footer-text-muted {
+  color: #a0aec0; 
+  font-size: 0.9rem; 
+  margin: 0;
+}
+
+.footer-text-spacing {
+  color: #a0aec0; 
+  font-size: 0.9rem; 
+  margin: 0.5rem 0 0 0;
+}
+
+.footer-text-highlight {
+  color: #ffff83; 
+  font-size: 0.9rem; 
+  margin: 0.5rem 0 0 0; 
+  font-weight: 700;
+}
+
+/* Derechos de autor inferiores */
+.footer-bottom-bar {
+  border-top: 1px solid #2d3748; 
+  margin-top: 2.5rem; 
+  padding-top: 1.5rem; 
+  text-align: center; 
+  font-size: 0.8rem; 
+  color: #718096;
+}
+
+.footer-bottom-bar p {
+  margin: 0;
+}

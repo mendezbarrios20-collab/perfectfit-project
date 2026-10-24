@@ -1,0 +1,157 @@
+/* ==========================================================================
+   ESTILOS PREMIUM - LOGIN FLOTANTE MINIMALISTA (ESTILO QUIÉNES SOMOS)
+   ========================================================================== */
+
+.login-page {
+  padding: 4rem 1rem;
+  /* Fondo general transparente, luminoso y elegante basado en tus pasteles */
+  background: radial-gradient(circle at top right, rgba(212, 233, 255, 0.4) 0%, rgba(254, 253, 166, 0.15) 50%, rgba(247, 191, 216, 0.25) 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* El bloque contenedor central (idéntico en proporciones a Quiénes Somos) */
+.login-canvas-container {
+  background-color: var(--white);
+  border-radius: 24px;
+  padding: 3.5rem;
+  /* Sombra ultra suave que da la sensación de que la tarjeta flota */
+  box-shadow: 0 30px 60px rgba(162, 199, 231, 0.25);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5rem;
+  flex-wrap: wrap;
+  border: 1px solid rgba(162, 199, 231, 0.12);
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* LADO IZQUIERDO: Tu logo flotando libremente */
+.login-logo-canvas {
+  flex: 1 1 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-logo-premium {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 18px;
+  /* Sombra de apoyo muy tenue idéntica a tu sección */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+}
+
+/* LADO DERECHO: El panel interno controlado */
+.login-form-canvas {
+  flex: 1.4 1 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-title {
+  font-size: 2.8rem;
+  margin-bottom: 0.4rem;
+  color: var(--text-dark);
+  font-family: var(--font-title);
+  letter-spacing: -0.5px;
+}
+
+.login-subtitle {
+  font-family: var(--font-nav);
+  color: #718096;
+  font-size: 0.95rem;
+  margin-bottom: 2.5rem;
+  font-weight: 500;
+}
+
+/* Alertas de validación estilizadas */
+.login-error-box {
+  background: #fff5f5;
+  color: #e53e3e;
+  padding: 0.9rem 1.2rem;
+  border-radius: 12px;
+  margin-bottom: 1.8rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1px solid #fed7d7;
+  font-family: var(--font-body);
+}
+
+/* Inputs minimalistas y elegantes */
+.login-field-group {
+  margin-bottom: 1.6rem;
+}
+
+.login-field-group-last {
+  margin-bottom: 2.5rem;
+}
+
+.login-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+  font-family: var(--font-nav);
+  color: var(--text-dark);
+  font-size: 0.9rem;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.95rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(162, 199, 231, 0.4);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  outline: none;
+  box-sizing: border-box;
+  transition: var(--transition);
+}
+
+/* Foco estético usando tu rosa corporativo */
+.login-input:focus {
+  border-color: var(--rose-dark);
+  box-shadow: 0 0 0 3px var(--rose-light);
+  background-color: var(--white);
+}
+
+/* Botón de envío estilizado de forma profesional */
+.login-submit-btn {
+  font-size: 1.05rem;
+  padding: 1rem 2.5rem;
+  border-radius: 30px;
+  box-shadow: 0 6px 18px rgba(235, 154, 192, 0.35);
+  width: 100%;
+  max-width: 240px; /* Tamaño contenido para un look fino y equilibrado */
+  cursor: pointer;
+}
+
+/* Adaptación responsiva para smartphones */
+@media (max-width: 768px) {
+  .login-canvas-container {
+    padding: 2.5rem 1.5rem;
+    gap: 3rem;
+    flex-direction: column-reverse; /* El formulario se ve primero en pantallas chicas */
+  }
+  .login-logo-canvas {
+    max-width: 200px;
+  }
+  .login-title {
+    font-size: 2.2rem;
+    text-align: center;
+  }
+  .login-subtitle {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .login-submit-btn {
+    max-width: 100%;
+  }
+}
