@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import { Menu, X } from 'lucide-react'; // Tus iconos de la hamburguesa
+import './App.css';
 
 // Importación de tus páginas reales
 import Home from './pages/Home';
@@ -9,25 +11,35 @@ import Recommender from './pages/Recommender';
 import Login from './pages/Login';
 
 function App() {
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
+  };
+
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+  };
+
   return (
     <Router>
-      {/* Navbar Superior Modernizada */}
-      <nav style={{ 
-        background: 'var(--white)', 
-        padding: '1.2rem 2rem', 
-        display: 'flex', 
-        gap: '2rem', 
-        alignItems: 'center',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000
-      }}>
-        <NavLink to="/" className="nav-link-custom" style={({ isActive }) => ({ fontWeight: isActive ? '700' : '400' })}>Inicio</NavLink>
-        <NavLink to="/catalogo" className="nav-link-custom">Catálogo</NavLink>
-        <NavLink to="/recomendador" className="nav-link-custom">IA Nutrición</NavLink>
-        <NavLink to="/contacto" className="nav-link-custom">Contacto</NavLink>
-        <NavLink to="/login" className="nav-link-custom" style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin</NavLink>
+      {/* Navbar Superior con tu diseño original exacto */}
+      <nav className="navbar-principal">
+        
+        {/* Botón de Hamburguesa: Totalmente escondido en la portátil, solo sale en celular */}
+        <button onClick={toggleMenu} className="boton-hamburguesa" aria-label="Menu de navegación">
+          {menuAbierto ? <X size={26} /> : <Menu size={26} />}
+        </button>
+
+        {/* Contenedor de enlaces: En tu portátil se verá idéntico a antes */}
+        <div className={`nav-enlaces ${menuAbierto ? 'nav-enlaces-movil-abierto' : ''}`}>
+          <NavLink to="/" onClick={cerrarMenu} className="nav-link-custom">Inicio</NavLink>
+          <NavLink to="/catalogo" onClick={cerrarMenu} className="nav-link-custom">Catálogo</NavLink>
+          <NavLink to="/recomendador" onClick={cerrarMenu} className="nav-link-custom">IA Nutrición</NavLink>
+          <NavLink to="/contacto" onClick={cerrarMenu} className="nav-link-custom">Contacto</NavLink>
+          <NavLink to="/login" onClick={cerrarMenu} className="nav-link-custom boton-admin-derecho">Admin</NavLink>
+        </div>
+
       </nav>
 
       {/* Selector de Pantallas */}

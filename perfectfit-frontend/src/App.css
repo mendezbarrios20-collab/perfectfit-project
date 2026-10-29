@@ -1,0 +1,76 @@
+/* ==========================================================================
+   ESTILOS DE LA BARRA DE NAVEGACIÓN ORIGINAL DE VALERIA
+   ========================================================================== */
+.navbar-principal {
+  background: var(--white); 
+  padding: 1.2rem 2rem; 
+  display: flex; 
+  gap: 2rem; 
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Contenedor que hereda el comportamiento original */
+.nav-enlaces {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  width: 100%; /* Ocupa toda la barra para empujar a Admin */
+}
+
+/* Tu regla original: Empuja el botón de Admin por completo a la derecha */
+.boton-admin-derecho {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+/* El botón de la hamburguesa no existe en tu computadora portátil */
+.boton-hamburguesa {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   REGLA EXCLUSIVA PARA PANTALLAS CHICAS (CELULARES)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .navbar-principal {
+    justify-content: flex-start; /* Alinea la hamburguesa a la izquierda en celular */
+  }
+
+  .boton-hamburguesa {
+    display: block; /* Aquí aparece el botón en el celular */
+  }
+
+  /* El menú se vuelve una lista vertical limpia en el celular */
+  .nav-enlaces {
+    display: none; 
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    padding: 1.5rem 2rem;
+    gap: 1.2rem;
+    align-items: flex-start; /* Alinea los textos a la izquierda en el móvil */
+    box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  /* Muestra el menú vertical cuando lo tocas en el móvil */
+  .nav-enlaces-movil-abierto {
+    display: flex !important;
+  }
+
+  /* Quita el empuje a la derecha en el celular para que quede ordenado */
+  .boton-admin-derecho {
+    margin-left: 0;
+  }
+}

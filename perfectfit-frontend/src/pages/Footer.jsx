@@ -1,11 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './Footer.css';
-
 // Ruta corregida del logo central del negocio
 import imgLogo from '../assets/images/solo-logo.jpg';
 
 function Footer() {
+  // Función para devolver el scroll al inicio de la pantalla automáticamente al cambiar de página
+  const manejarScrollArriba = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="perfectfit-footer">
       <div className="footer-grid">
@@ -32,9 +36,10 @@ function Footer() {
         <div>
           <h4 className="footer-column-title">🔗 Enlaces</h4>
           <div className="footer-links-container">
-            <Link to="/" className="footer-link-item">🏠 Inicio</Link>
-            <Link to="/catalogo" className="footer-link-item">🥗 Catálogo</Link>
-            <Link to="/contacto" className="footer-link-item">✉️ Contacto</Link>
+            <NavLink to="/" onClick={manejarScrollArriba} className="footer-link-item">🏠 Inicio</NavLink>
+            <NavLink to="/catalogo" onClick={manejarScrollArriba} className="footer-link-item">🥗 Catálogo</NavLink>
+            <NavLink to="/recomendador" onClick={manejarScrollArriba} className="footer-link-item">🤖 IA Nutrición</NavLink>
+            <NavLink to="/contacto" onClick={manejarScrollArriba} className="footer-link-item">✉️ Contacto</NavLink>
           </div>
         </div>
 
