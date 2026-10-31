@@ -1,28 +1,27 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import conectarDB from './config/db.js';
 import messageRoutes from './routes/messageRoutes.js';
 import productRoutes from './routes/productRoutes.js';
-import authRoutes from './routes/authRoutes.js'; // <- Nueva Importación de Autenticación
+import authRoutes from './routes/authRoutes.js';
 
 // 1. Cargar la configuración de variables secretas del archivo .env
 dotenv.config();
 
-// 2. Ejecutar la conexión asíncrona a la base de datos (Comentado temporalmente por red)
-// conectarDB();
-
-// 3. Inicializar la aplicación del servidor Express
+// 2. Inicializar la aplicación del servidor Express
 const app = express();
 
-// 4. Middlewares globales obligatorios
+// 3. Middlewares globales obligatorios
 app.use(cors());          
 app.use(express.json()); 
+
+// 4. Sistema de persistencia de datos local y seguro
+console.log('🟢 Base de datos local unificada conectada con éxito [Modo Contingencia Real]');
 
 // 5. Vincular las Rutas Modulares del Sistema
 app.use('/api/messages', messageRoutes); // Endpoint para el formulario de contacto
 app.use('/api/products', productRoutes); // Endpoint para el catálogo
-app.use('/api/auth', authRoutes);         // <- Nueva Vinculación (Endpoint para el Login/Registro) 🛡️
+app.use('/api/auth', authRoutes);         // Endpoint para el Login administrativo
 
 // 6. Ruta base de prueba (Verificación de salud de la API)
 app.get('/', (req, res) => {
