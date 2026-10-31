@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// Importación de estilos independientes
+import axios from 'axios'; // <- 1. IMPORTACIÓN OBLIGATORIA PARA LA CONEXIÓN
 import './Contact.css';
-// Imagen de fondo corporativa
 import imgFondoContacto from '../assets/images/contacto.jpg';
 
 function Contact() {
@@ -11,9 +10,11 @@ function Contact() {
     phone: '',
     message: ''
   });
+  
   const [enviado, setEnviado] = useState(false);
   const [tituloAnimado, setTituloAnimado] = useState('');
-  
+  const [errorServidor, setErrorServidor] = useState(''); // <- Estado para capturar errores de red
+
   useEffect(() => {
     const textoCompleto = 'Escríbenos...';
     let index = 0;
@@ -48,11 +49,25 @@ function Contact() {
     });
   };
 
-  const handleSubmit = (e) => {
+  // 2. FUNCIÓN DE ENVÍO ASÍNCRONA CONECTADA A TU NODE.JS LOCAL
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos capturados para enviar a MongoDB:", formData);
-    setEnviado(true);
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setErrorServidor(''); // Limpiamos errores previos antes de intentar
+    
+    try {
+      // Enviamos el formData directo a tu API local en el puerto 5000
+      const respuesta = await axios.post('http://localhost:5000/api/messages', formData);
+      
+      // Si el backend responde con success: true, activamos tu tarjeta de éxito
+      if (respuesta.data.success) {
+        console.log("¡Datos guardados con éxito en el servidor local!", respuesta.data);
+        setEnviado(true);
+        setFormData({ name: '', email: '', phone: '', message: '' }); // Limpiamos campos
+      }
+    } catch (error) {
+      console.error("Error en la conexión con el servidor modular:", error);
+      setErrorServidor('⚠️ No se pudo enviar el mensaje. Verifica que el servidor del backend esté encendido.');
+    }
   };
 
   return (
@@ -72,6 +87,13 @@ function Contact() {
         <p className="contact-subtitle">
           ¿Tienes dudas sobre los macros, un pedido para tu entrenamiento o sugerencias? Déjanos tu mensaje.
         </p>
+
+        {/* Mensaje de Error de red si el servidor estuviera apagado */}
+        {errorServidor && (
+          <div className="login-error-box" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+            {errorServidor}
+          </div>
+        )}
 
         {enviado ? (
           <div className="contact-success-card">

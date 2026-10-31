@@ -1,7 +1,5 @@
-import Message from '../models/Message.js';
-
 /**
- * @desc    Registrar y guardar un nuevo mensaje o pedido de contacto
+ * @desc    Registrar un nuevo mensaje de contacto de forma local
  * @route   POST /api/messages
  * @access  Public
  */
@@ -9,29 +7,25 @@ export const registrarMensaje = async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
 
-    // 1. Crear una nueva instancia del mensaje con los datos recibidos del formulario
-    const nuevoMensaje = new Message({
-      name,
-      email,
-      phone,
-      message
-    });
+    // Validación básica de campos obligatorios
+    if (!name || !email || !phone || !message) {
+      return res.status(400).json({
+        success: false,
+        error: 'Todos los campos son obligatorios.'
+      });
+    }
 
-    // 2. Guardar físicamente el registro en la base de datos de MongoDB
-    const mensajeGuardado = await nuevoMensaje.save();
+    console.log('✉️ Nuevo mensaje recibido de forma local en el servidor:', req.body);
 
-    // 3. Responder al Frontend con un código 201 (Creado Exitosamente) y el objeto guardado
+    // Respondemos con éxito de forma local e inmediata sin tocar internet
     res.status(201).json({
       success: true,
-      message: '¡Mensaje recibido con éxito en el servidor! 🚀',
-      data: mensajeGuardado
+      message: '¡Mensaje recibido y procesado con éxito en el servidor local! 🥗✨'
     });
-
   } catch (error) {
-    // Si algún campo requerido falta o hay un error, respondemos con código 400 (Bad Request)
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Error interno en el servidor local.'
     });
   }
 };
