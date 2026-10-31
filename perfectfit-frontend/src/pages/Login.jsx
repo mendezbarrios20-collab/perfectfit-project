@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // <- Conexión asíncrona oficial con el servidor
 import './Login.css';
-
-// Importación de tu recurso oficial limpio sin textos
 import imgLogoCorporate from '../assets/images/solo-logo.jpg';
 
 function Login() {
+  // Estado local usando tus variables de credenciales originales
   const [credentials, setCredentials] = useState({
-    username: '',
+    username: '', // Tu formulario usa 'username' en el input
     password: ''
   });
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials({
@@ -18,26 +20,47 @@ function Login() {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
-    
-    console.log("Intentando iniciar sesión con:", credentials);
-    
-    if (credentials.username === 'admin' && credentials.password === 'perfectfit2026') {
-      alert("¡Ingreso exitoso al sistema de gestión de PerfectFit Bowl!");
-    } else {
-      setError('⚠️ Credenciales incorrectas. Verifica el usuario o la contraseña de administración.');
+    setError(''); // Limpiamos alertas previas
+
+    try {
+      // Disparamos la petición POST al backend modular en el puerto 5000
+      // Enviamos credentials.username como el email que espera el servidor
+      const respuesta = await axios.post('http://localhost:5000/api/auth/login', {
+        email: credentials.username,
+        password: credentials.password
+      });
+
+      // Si el backend valida con éxito las credenciales locales
+      if (respuesta.data.success) {
+        console.log("¡Ingreso exitoso al sistema de gestión!", respuesta.data);
+        
+        // Guardamos el token de sesión seguro en el navegador
+        localStorage.setItem('token', respuesta.data.token);
+        
+        // Redireccionamos de inmediato al Administrador hacia su panel
+        navigate('/admin'); 
+      }
+    } catch (err) {
+      console.error("Error detectado en el inicio de sesión:", err);
+      
+      // Capturamos el mensaje de error específico que programamos en tu backend
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('⚠️ Error de conexión con el servidor. Verifica que el backend esté encendido.');
+      }
     }
   };
 
   return (
     <div className="login-page">
       
-      {/* Contenedor Flotante de Alta Gama */}
+      {/* Contenedor Flotante de Alta Gama Restaurado */}
       <div className="login-canvas-container">
         
-        {/* Lado Izquierdo: Tu Logo de Marca Libre */}
+        {/* Lado Izquierdo: Tu Logo de Marca Libre Restaurado */}
         <div className="login-logo-canvas">
           <img 
             src={imgLogoCorporate} 
@@ -46,7 +69,7 @@ function Login() {
           />
         </div>
 
-        {/* Lado Derecho: Los Campos del Panel de Gestión */}
+        {/* Lado Derecho: Los Campos del Panel de Gestión Conectados */}
         <div className="login-form-canvas">
           <form onSubmit={handleLogin}>
             
@@ -58,19 +81,19 @@ function Login() {
               Acceso exclusivo para el administrador de PerfectFit Bowl.
             </p>
 
-            {/* Manejo de Alertas de Error */}
+            {/* Manejo de Alertas de Error Estilizado */}
             {error && <div className="login-error-box">{error}</div>}
 
             {/* Campo: Usuario */}
             <div className="login-field-group">
-              <label className="login-label">Usuario Administrador:</label>
+              <label className="login-label">Usuario Administrador (Correo):</label>
               <input 
                 type="text" 
                 name="username"
                 value={credentials.username}
                 onChange={handleChange}
                 required
-                placeholder="Ej. admin"
+                placeholder="Ej. admin@perfectfit.com"
                 className="login-input"
               />
             </div>
@@ -84,21 +107,19 @@ function Login() {
                 value={credentials.password}
                 onChange={handleChange}
                 required
-                placeholder="••••••••••••"
+                placeholder="••••••••"
                 className="login-input"
               />
             </div>
 
-            {/* Botón de Entrada Autenticada */}
+            {/* Botón de Entrada Autenticada Estilizado Original */}
             <button type="submit" className="btn btn-secondary login-submit-btn">
               Autenticar Entrada
             </button>
-
           </form>
         </div>
 
       </div>
-
     </div>
   );
 }
