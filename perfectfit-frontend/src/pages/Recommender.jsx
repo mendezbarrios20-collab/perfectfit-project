@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // <- Conexión obligatoria con tu API local
 import './Recommender.css';
-// Importamos la fuente única de verdad de los platos
-import { menuData } from '../data/menuData';
-// Imagen de fondo corporativa
 import imgFondoRecomendador from '../assets/images/Acai.jpg';
 
 function Recommender() {
+  const [productos, setProductos] = useState([]); // <- Estado para guardar los platos reales del servidor
   const [objective, setObjective] = useState('');
   const [budget, setBudget] = useState('');
   const [recommendations, setRecommendations] = useState([]);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState('');
+  const [errorConexion, setErrorConexion] = useState('');
+
+  // Consumimos los platos del servidor local al cargar la pantalla
+  useEffect(() => {
+    const obtenerMenuServidor = async () => {
+      try {
+        setErrorConexion('');
+        const respuesta = await axios.get('http://localhost:5000/api/products');
+        if (respuesta.data.success) {
+          setProductos(respuesta.data.data);
+        }
+      } catch (err) {
+        console.error("Error al conectar el recomendador con el backend:", err);
+        setErrorConexion('⚠️ No se pudo conectar con el sistema de IA local. Verifica que el Backend esté encendido.');
+      }
+    };
+    obtenerMenuServidor();
+  }, []);
 
   const handleRecommend = (e) => {
     e.preventDefault();
@@ -26,9 +43,11 @@ function Recommender() {
       return;
     }
 
-    const filtered = menuData.filter(
+    // Ejecución nativa del algoritmo experto cruzando los requerimientos con la data de tu servidor local
+    const filtered = productos.filter(
       (item) => item.objective === objective && item.price <= maxBudget
     );
+    
     setRecommendations(filtered);
     setSearched(true);
   };
@@ -37,13 +56,9 @@ function Recommender() {
 
   return (
     <div className="recommender-page" style={{ backgroundImage: `url(${imgFondoRecomendador})` }}>
-      
-      {/* Capa de contraste */}
       <div aria-hidden="true" className="recommender-overlay" />
       
       <main className="recommender-container">
-        
-        {/* Encabezado */}
         <h1 style={{ textAlign: 'center', marginBottom: '0.8rem', fontSize: 'clamp(2rem, 6vw, 3rem)', color: 'var(--white)', textShadow: '0 2px 10px rgba(0,0,0,0.4)' }}>
           Asesoría de Nutrición IA
         </h1>
@@ -52,10 +67,14 @@ function Recommender() {
           Cuéntanos tus metas del día y nuestro sistema seleccionará opciones del menú que se ajusten a tus preferencias y presupuesto en Cartagena.
         </p>
 
-        {/* Formulario Glassmorphism */}
+        {/* Alerta si el servidor del backend estuviera apagado */}
+        {errorConexion && (
+          <div className="login-error-box" style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            {errorConexion}
+          </div>
+        )}
+
         <form onSubmit={handleRecommend} className="recommender-glass-form">
-          
-          {/* Campo: Objetivo */}
           <div style={{ marginBottom: '2rem' }}>
             <label htmlFor="nutrition-objective" style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontFamily: 'var(--font-nav)', color: 'var(--text-dark)', fontSize: '1.05rem' }}>
               ¿Cuál es tu objetivo nutricional de hoy?
@@ -78,7 +97,6 @@ function Recommender() {
             </select>
           </div>
 
-          {/* Campo: Presupuesto */}
           <div style={{ marginBottom: '2rem' }}>
             <label htmlFor="nutrition-budget" style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontFamily: 'var(--font-nav)', color: 'var(--text-dark)', fontSize: '1.05rem' }}>
               ¿Cuál es tu presupuesto máximo disponible (COP)?
@@ -100,7 +118,6 @@ function Recommender() {
             />
           </div>
 
-          {/* Manejo de Alertas de Validación */}
           {error && (
             <p role="alert" style={{ color: '#9b1c31', fontWeight: '700', marginBottom: '1.25rem' }}>
               {error}
@@ -118,7 +135,6 @@ function Recommender() {
           </button>
         </form>
 
-        {/* Bloque de Resultados */}
         {searched && (
           <section className="recommendation-results" aria-live="polite" aria-labelledby="recommendation-title">
             <h2 id="recommendation-title" style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--white)', fontSize: 'clamp(1.7rem, 5vw, 2.2rem)', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
