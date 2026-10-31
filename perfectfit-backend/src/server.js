@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import conectarDB from './config/db.js';
 import messageRoutes from './routes/messageRoutes.js';
-import productRoutes from './routes/productRoutes.js'; // <- Importamos las rutas del catálogo
+import productRoutes from './routes/productRoutes.js';
+import authRoutes from './routes/authRoutes.js'; // <- Nueva Importación de Autenticación
 
 // 1. Cargar la configuración de variables secretas del archivo .env
 dotenv.config();
@@ -20,7 +21,8 @@ app.use(express.json());
 
 // 5. Vincular las Rutas Modulares del Sistema
 app.use('/api/messages', messageRoutes); // Endpoint para el formulario de contacto
-app.use('/api/products', productRoutes); // <- ¡Aquí está la línea que faltaba para el catálogo! 🥗
+app.use('/api/products', productRoutes); // Endpoint para el catálogo
+app.use('/api/auth', authRoutes);         // <- Nueva Vinculación (Endpoint para el Login/Registro) 🛡️
 
 // 6. Ruta base de prueba (Verificación de salud de la API)
 app.get('/', (req, res) => {
