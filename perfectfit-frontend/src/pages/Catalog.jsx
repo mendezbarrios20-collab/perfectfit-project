@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // <- Conexión obligatoria con tu API local
+import axios from 'axios';
 import './Catalog.css';
 
-// Importación de tus imágenes locales originales para enlazarlas con la data del servidor [1]
+// Importación de tus imágenes originales
 import imgArrozInflado from '../assets/images/ArrozInflado.jpg';
 import imgArrozCurry from '../assets/images/ArrozCurry.jpg';
 import imgBarritas from '../assets/images/Barritas.jpg';
@@ -20,12 +20,11 @@ import imgAvena from '../assets/images/Avena.jpeg';
 import imgTrufas from '../assets/images/Trufas.jpeg';
 import imgWrap from '../assets/images/Wrap.avif';
 
-function Catalog() {
-  const [productos, setProductos] = useState([]); // <- Estado para guardar los platos del backend
+function Catalog({ alAgregarPlato }) { 
+  const [productos, setProductos] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState('todos');
   const [error, setError] = useState('');
 
-  // Diccionario para enlazar los IDs de los platos con tus archivos de imagen importados [1]
   const mapaImagenes = {
     1: imgAvena, 2: imgWaffles, 3: imgTostada, 4: imgAcai, 5: imgMuffins,
     6: imgPudin, 7: imgGarbanzos, 8: imgTrufas, 9: imgBarritas, 10: imgArrozInflado,
@@ -41,7 +40,6 @@ function Catalog() {
     { id: 'post-entreno', label: '🏆 Post-Entreno' },
   ];
 
-  // Efecto asíncrono para consumir los productos al cargar la pantalla [1]
   useEffect(() => {
     const consultarAPI = async () => {
       try {
@@ -58,7 +56,6 @@ function Catalog() {
     consultarAPI();
   }, []);
 
-  // Filtrado reactivo en el lado del cliente basado en la data del servidor [1]
   const productosFiltrados =
     categoriaActiva === 'todos'
       ? productos
@@ -72,10 +69,9 @@ function Catalog() {
         <p className="catalog-description-top">
           Selecciona el momento de tu rutina para ver las opciones ideales para ti en Cartagena.
         </p>
-
-        {/* Mensaje de error visual en pantalla si el backend se apaga */}
+        
         {error && <div className="login-error-box" style={{ marginBottom: '2rem', textAlign: 'center' }}>{error}</div>}
-
+        
         <div className="catalog-filters">
           {categorias.map((cat) => (
             <button
@@ -94,7 +90,6 @@ function Catalog() {
           {productosFiltrados.map((producto) => (
             <article key={producto.id} className="perfectfit-card">
               <div className="perfectfit-card-img-wrapper">
-                {/* Usamos el mapa para pintar tu imagen local original basándonos en el ID del servidor */}
                 <img src={mapaImagenes[producto.id]} alt={producto.name} loading="lazy" />
                 <span className="category-badge">{producto.category}</span>
               </div>
@@ -105,14 +100,21 @@ function Catalog() {
                 <div className="macros-box">
                   💪 <span>Macros: {producto.macros}</span>
                 </div>
+                
                 <div className="card-footer">
                   <span className="card-price">
                     ${producto.price.toLocaleString('es-CO')}
                   </span>
+                  
                   <button
                     type="button"
                     className="btn btn-primary card-btn"
-                    onClick={() => console.info(`Producto seleccionado desde el servidor: ${producto.name}`)}
+                    onClick={() => {
+                      console.log("Añadiendo al carrito:", producto.name);
+                      if (alAgregarPlato) {
+                        alAgregarPlato(producto); 
+                      }
+                    }}
                   >
                     Pedir Fit
                   </button>

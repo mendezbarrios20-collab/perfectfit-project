@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ESTILOS DE LA BARRA DE NAVEGACIÓN ORIGINAL DE VALERIA
+   ESTILOS PREMIUM DE LA BARRA DE NAVEGACIÓN Y EL CARRITO (UNIFICADO)
    ========================================================================== */
 .navbar-principal {
   background: var(--white); 
@@ -13,21 +13,29 @@
   z-index: 1000;
 }
 
-/* Contenedor que hereda el comportamiento original */
 .nav-enlaces {
+  display: flex;
+  justify-content: space-between; /* Separa los dos bloques a los extremos */
+  align-items: center;
+  width: 100%;
+}
+
+.nav-grupo-izquierdo {
+  display: flex;
+  gap: 2.5rem; /* Mantiene el espaciado original */
+}
+
+.nav-grupo-derecho {
   display: flex;
   gap: 2rem;
   align-items: center;
-  width: 100%; /* Ocupa toda la barra para empujar a Admin */
+  margin-left: auto; /* Empuja el bloque al extremo derecho */
 }
 
-/* Tu regla original: Empuja el botón de Admin por completo a la derecha */
 .boton-admin-derecho {
-  margin-left: auto;
   font-weight: bold;
 }
 
-/* El botón de la hamburguesa no existe en tu computadora portátil */
 .boton-hamburguesa {
   display: none;
   background: none;
@@ -36,41 +44,203 @@
   cursor: pointer;
 }
 
-/* ==========================================================================
-   REGLA EXCLUSIVA PARA PANTALLAS CHICAS (CELULARES)
-   ========================================================================== */
+.nav-carrito-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding: 0.5rem;
+  color: var(--text-dark);
+  transition: 0.3s ease;
+}
+
+.nav-carrito-btn:hover {
+  color: var(--rose-dark);
+}
+
+.contador-carrito {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  background-color: var(--rose-dark);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-nav, sans-serif);
+  box-shadow: 0 2px 5px rgba(235, 154, 192, 0.5);
+}
+
+.carrito-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  justify-content: flex-end; 
+}
+
+.carrito-modal-content {
+  background-color: var(--white, #ffffff);
+  width: 100%;
+  max-width: 380px;
+  height: 100vh;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  animation: deslizarCarrito 0.3s ease-out;
+}
+
+@keyframes deslizarCarrito {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.carrito-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.carrito-header h3 {
+  font-family: var(--font-title, serif);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.cerrar-carrito-btn {
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.cerrar-carrito-btn:hover {
+  color: var(--rose-dark);
+}
+
+.carrito-vacio-txt {
+  color: #718096;
+  text-align: center;
+  margin-top: 4rem;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.carrito-items-lista {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-right: 0.25rem;
+}
+
+.carrito-item-card {
+  background: #f7fafc;
+  border: 1px solid rgba(162, 199, 231, 0.15);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.carrito-item-info h4 {
+  font-size: 0.95rem;
+  font-family: var(--font-body, sans-serif);
+  color: var(--text-dark);
+  margin: 0 0 0.2rem 0;
+}
+
+.carrito-item-info p {
+  font-size: 0.85rem;
+  color: #4a5568;
+  font-family: var(--font-nav, sans-serif);
+  font-weight: 600;
+  margin: 0;
+}
+
+.eliminar-item-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  transition: 0.3s ease;
+  padding: 0.4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eliminar-item-btn:hover {
+  color: #e53e3e;
+  background-color: #fff5f5;
+}
+
+.carrito-footer {
+  border-top: 2px solid #edf2f7;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.carrito-total-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-nav, sans-serif);
+  font-size: 1.1rem;
+}
+
+.carrito-total-fila strong {
+  color: var(--green-dark);
+  font-size: 1.3rem;
+}
+
+.cta-finalizar-pedido {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
-  .navbar-principal {
-    justify-content: flex-start; /* Alinea la hamburguesa a la izquierda en celular */
-  }
-
-  .boton-hamburguesa {
-    display: block; /* Aquí aparece el botón en el celular */
-  }
-
-  /* El menú se vuelve una lista vertical limpia en el celular */
+  .navbar-principal { justify-content: flex-start; }
+  .boton-hamburguesa { display: block; }
   .nav-enlaces {
     display: none; 
     flex-direction: column;
     position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    top: 100%; left: 0; right: 0;
     background-color: var(--white);
-    padding: 1.5rem 2rem;
-    gap: 1.2rem;
-    align-items: flex-start; /* Alinea los textos a la izquierda en el móvil */
+    padding: 1.5rem 2rem; gap: 1.2rem;
+    align-items: flex-start;
     box-shadow: 0 10px 15px rgba(0,0,0,0.05);
     border-top: 1px solid rgba(0,0,0,0.05);
   }
-
-  /* Muestra el menú vertical cuando lo tocas en el móvil */
-  .nav-enlaces-movil-abierto {
-    display: flex !important;
+  .nav-enlaces-movil-abierto { display: flex !important; }
+  .nav-grupo-izquierdo, .nav-grupo-derecho {
+    flex-direction: column; align-items: flex-start; width: 100%; gap: 1.2rem;
   }
-
-  /* Quita el empuje a la derecha en el celular para que quede ordenado */
-  .boton-admin-derecho {
-    margin-left: 0;
+  .nav-grupo-derecho {
+    margin-left: 0; margin-top: 0.5rem;
+    border-top: 1px solid #edf2f7; padding-top: 1rem;
   }
 }
