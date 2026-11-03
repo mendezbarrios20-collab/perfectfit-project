@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react'; // Tus iconos de la hamburguesa
 import './App.css';
 
@@ -9,6 +9,17 @@ import Catalog from './pages/Catalog';
 import Contact from './pages/Contact';
 import Recommender from './pages/Recommender';
 import Login from './pages/Login';
+import Footer from './pages/Footer';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -23,6 +34,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       {/* Navbar Superior con tu diseño original exacto */}
       <nav className="navbar-principal">
         
@@ -43,13 +55,16 @@ function App() {
       </nav>
 
       {/* Selector de Pantallas */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/catalogo" element={<Catalog />} />
-        <Route path="/contacto" element={<Contact />} />
-        <Route path="/recomendador" element={<Recommender />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+      <main style={{ minHeight: '85vh', width: '100%', display: 'block' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/catalogo" element={<Catalog />} />
+          <Route path="/contacto" element={<Contact />} />
+          <Route path="/recomendador" element={<Recommender />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </main>
+      <Footer />
     </Router>
   );
 }

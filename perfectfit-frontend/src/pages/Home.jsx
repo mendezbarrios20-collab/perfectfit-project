@@ -13,9 +13,6 @@ import imgLogo from '../assets/images/logo.jpeg';
 import imgFondoCafeteria from '../assets/images/fondo-cafeteria.jpg';
 import imgFondoContacto from '../assets/images/fondo-contacto.jpg';
 
-// Footer
-import Footer from './Footer';
-
 function Home() {
   const navigate = useNavigate();
   
@@ -191,8 +188,6 @@ function Home() {
         </div>
       </section>
 
-      {/* 6. FOOTER */}
-      <Footer />
     </div>
   );
 }
