@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'La categoría (Desayunos, Snacks, Pre/Post Entreno) es obligatoria.'],
-    enum: ['Desayunos', 'Snacks', 'Pre Entreno', 'Post Entreno'] // Solo permite estos momentos del día
+    enum: ['desayunos', 'snacks', 'pre-entreno', 'post-entreno']
   },
   macros: {
     calories: { type: Number, required: true },
