@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from 'axios'; // <- 1. CORREGIDO: Importación oficial de la librería instalada
 import './Catalog.css';
 
 // Importación de tus imágenes originales
@@ -87,45 +87,58 @@ function Catalog({ alAgregarPlato }) {
         </div>
 
         <div className="catalog-grid">
-          {productosFiltrados.map((producto) => (
-            <article key={producto.id} className="perfectfit-card">
-              <div className="perfectfit-card-img-wrapper">
-                <img src={mapaImagenes[producto.id]} alt={producto.name} loading="lazy" />
-                <span className="category-badge">{producto.category}</span>
-              </div>
-              <div className="card-body">
-                <h3 className="card-title">{producto.name}</h3>
-                <p className="card-description">{producto.description}</p>
-                
-                <div className="macros-box">
-                  💪 <span>Macros: {producto.macros}</span>
+          {productosFiltrados.map((producto) => {
+            // 2. CORREGIDO: Extraemos el ID dinámico adaptado a entorno local e híbrido de base de datos
+            const idPlato = producto.id || producto._id;
+            return (
+              <article key={idPlato} className="perfectfit-card">
+                <div className="perfectfit-card-img-wrapper">
+                  <img src={mapaImagenes[idPlato]} alt={producto.name} loading="lazy" />
+                  <span className="category-badge">{producto.category}</span>
                 </div>
-                
-                <div className="card-footer">
-                  <span className="card-price">
-                    ${producto.price.toLocaleString('es-CO')}
-                  </span>
+                <div className="card-body">
+                  <h3 className="card-title">{producto.name}</h3>
+                  <p className="card-description">{producto.description}</p>
                   
-                  <button
-                    type="button"
-                    className="btn btn-primary card-btn"
-                    onClick={() => {
-                      console.log("Añadiendo al carrito:", producto.name);
-                      if (alAgregarPlato) {
-                        alAgregarPlato(producto); 
-                      }
-                    }}
-                  >
-                    Pedir Fit
-                  </button>
+                  {/* Conservamos intacta tu increíble idea de diseño estético para los macros */}
+                  <div className="macros-box" style={{ lineHeight: '1.8' }}>
+                    <div style={{ fontWeight: '700', marginBottom: '0.4rem', color: 'var(--green-dark)' }}>
+                      💪 Aporte Nutricional:
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.2rem', fontWeight: '500', color: 'var(--text-dark)' }}>
+                      <div>⚡ Calorías: <strong>{producto.macros?.calories || 0}</strong> kcal</div>
+                      <div>🥩 Proteínas: <strong>{producto.macros?.protein || 0}g</strong></div>
+                      <div>🌾 Carbohidratos: <strong>{producto.macros?.carbs || 0}g</strong></div>
+                      <div>🥑 Grasas: <strong>{producto.macros?.fats || 0}g</strong></div>
+                    </div>
+                  </div>
+                  
+                  <div className="card-footer">
+                    <span className="card-price">
+                      ${producto.price.toLocaleString('es-CO')}
+                    </span>
+                    
+                    <button
+                      type="button"
+                      className="btn btn-primary card-btn"
+                      onClick={() => {
+                        console.log("Añadiendo al carrito:", producto.name);
+                        if (alAgregarPlato) {
+                          alAgregarPlato(producto); 
+                        }
+                      }}
+                    >
+                      Pedir Fit
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
         {productosFiltrados.length === 0 && !error && (
-          <p className="catalog-empty-message">
+          <p className="carrito-vacio-txt" style={{ textAlign: 'center', marginTop: '3rem' }}>
             No hay productos disponibles en esta categoría.
           </p>
         )}
