@@ -1,0 +1,79 @@
+/* ==========================================================================
+   REGISTRO DEFENSIVO DE FUENTES LOCALES (PERFECTFIT BOWL)
+   ========================================================================== */
+
+/* 1. PLAYFAIR DISPLAY (TÍTULOS) */
+@font-face {
+    font-family: "Playfair Display";
+    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Regular.ttf") format("truetype");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "Playfair Display";
+    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Bold.ttf") format("truetype");
+    font-weight: 700;
+}
+@font-face {
+    font-family: "Playfair Display";
+    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+}
+@font-face {
+    font-family: "Playfair Display";
+    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Black.ttf") format("truetype");
+    font-weight: 900;
+}
+
+/* 2. MONTSERRAT (CUERPO Y PÁRRAFOS) */
+@font-face {
+    font-family: "Montserrat";
+    src: url("./assets/fonts/Montserrat/Montserrat-ExtraLight.ttf") format("truetype");
+    font-weight: 200;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url("./assets/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
+    font-weight: 700;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url("./assets/fonts/Montserrat/Montserrat-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url("./assets/fonts/Montserrat/Montserrat-Black.ttf") format("truetype");
+    font-weight: 900;
+}
+
+/* 3. NUNITO (BOTONES Y MENÚS - Homologado con mayúscula) */
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/Nunito-ExtraLight.ttf") format("truetype");
+    font-weight: 200;
+}
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/Nunito-Regular.ttf") format("truetype");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/Nunito-Bold.ttf") format("truetype");
+    font-weight: 700;
+}
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/Nunito-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+}
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/Nunito-Black.ttf") format("truetype");
+    font-weight: 900;
+}

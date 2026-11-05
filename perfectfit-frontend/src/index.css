@@ -1,4 +1,9 @@
 /* ==========================================================================
+   INVERSIÓN ARQUITECTURA LIMPIA - IMPORTACIÓN DE FUENTES LOCALES
+   ========================================================================== */
+@import url('./fonts.css');
+
+/* ==========================================================================
    VARIABLES DE DISEÑO PERSONALIZADAS - PERFECTFIT BOWL
    ========================================================================== */
 :root {
@@ -27,7 +32,7 @@
   --bg-light: #fefefe;
   --white: #ffffff;
 
-  /* Tus Tipografías Elegidas (Conectadas desde el index.html) */
+  /* Tus Tipografías Elegidas (Conectadas desde tu nuevo archivo local fonts.css) */
   --font-title: 'Playfair Display', serif;   /* Elegancia para títulos principales */
   --font-body: 'Montserrat', sans-serif;    /* Modernidad para descripciones y catálogo */
   --font-nav: 'Nunito', sans-serif;          /* Fluidez para menús, botones e inputs */
@@ -151,4 +156,3 @@ a {
 .nav-link-custom.active::after {
   width: 100%;
 }
-

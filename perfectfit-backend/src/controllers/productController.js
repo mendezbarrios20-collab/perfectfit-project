@@ -1,3 +1,5 @@
+import Product from '../models/Product.js'; // <- 1. Importación real del modelo de Mongoose
+
 /**
  * @desc    Obtener todos los platos de la cafetería PerfectFit Bowl
  * @route   GET /api/products
@@ -5,7 +7,7 @@
  */
 export const obtenerProductos = async (req, res) => {
   try {
-    // Tu lista oficial de 16 platos reales con macros estructurados numéricamente
+    // Tu lista oficial de 16 platos reales con macros estructurados numéricamente para tu IA
     const menuCompleto = [
       // 1. DESAYUNOS
       { id: 1, name: 'Overnight Oats de Proteína', category: 'desayunos', objective: 'saciedad', price: 24900, description: 'Avena trasnochada preparada con proteína, semillas de chía y arándanos.', macros: { calories: 350, protein: 25, carbs: 45, fats: 6 } },
@@ -46,24 +48,41 @@ export const obtenerProductos = async (req, res) => {
 };
 
 /**
- * @desc    Registrar un nuevo plato de forma local
+ * @desc    Registrar un nuevo plato en la base de datos de forma persistente
  * @route   POST /api/products
  * @access  Public
  */
 export const crearProducto = async (req, res) => {
   try {
-    const nuevoProducto = { 
-      ...req.body, 
-      _id: "plato_prueba_" + Math.random().toString(36).substr(2, 9), 
-      createdAt: new Date() 
-    };
-    
+    const { name, price, description, image, category, calories, protein, carbs, fats } = req.body;
+
+    // Estructuramos los datos para que encajen perfectamente con el esquema estricto de Product.js
+    const nuevoPlato = await Product.create({
+      name,
+      price,
+      description,
+      image,
+      category,
+      macros: {
+        calories,
+        protein,
+        carbs,
+        fats
+      }
+    });
+
+    console.log('🥞 Nuevo plato guardado con éxito en la base de datos:', nuevoPlato);
+
     res.status(201).json({
       success: true,
       message: '¡Plato recibido y registrado exitosamente en el servidor local! 🥞',
-      data: nuevoProducto
+      data: nuevoPlato
     });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    console.error('❌ Error de validación en Mongoose al crear el producto:', error);
+    res.status(400).json({ 
+      success: false, 
+      error: 'Error al registrar el plato. Asegúrate de cumplir con el esquema técnico.' 
+    });
   }
 };

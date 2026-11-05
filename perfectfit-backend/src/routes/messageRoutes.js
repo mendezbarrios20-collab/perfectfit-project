@@ -1,9 +1,12 @@
 import express from 'express';
-import { registrarMensaje } from '../controllers/messageController.js';
-
+import { registrarMensaje, obtenerMensajes, eliminarMensaje } from '../controllers/messageController.js';
 const router = express.Router();
 
-// Define que cuando llegue una petición HTTP POST a la raíz de este enrutador, ejecute la lógica del controlador
-router.post('/', registrarMensaje);
+router.route('/')
+  .post(registrarMensaje)
+  .get(obtenerMensajes); // GET /api/messages -> Para cargar la bandeja de entrada admin
+
+router.route('/:id')
+  .delete(eliminarMensaje); // DELETE /api/messages/:id -> Para el boton rojo de borrar
 
 export default router;

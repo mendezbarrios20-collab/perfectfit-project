@@ -1,0 +1,252 @@
+/* ==========================================================================
+   ESTILOS CORPORATIVOS UNIFICADOS - CONSOLA DE ADMINISTRACIÓN PASTEL
+   ========================================================================== */
+
+.admin-page {
+  padding: 4rem 0;
+  /* Rediseño: Fondo degradado suave en sintonía con tu pantalla de Login */
+  background: linear-gradient(135deg, #fff5f7 0%, #f4f9ff 50%, #fffef4 100%);
+  min-height: 100vh;
+}
+
+.admin-loading {
+  padding: 5rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+.admin-header {
+  margin-bottom: 3.5rem;
+  border-bottom: 2px solid var(--rose-light);
+  padding-bottom: 2rem;
+}
+
+.admin-brand-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Rediseño: Logotipo más grande e imponente */
+.admin-logo-img {
+  height: 75px;  
+  width: 75px;   
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 6px 16px rgba(162, 199, 231, 0.4);
+  border: 3px solid var(--white);
+  transition: var(--transition);
+}
+
+.admin-logo-img:hover {
+  transform: scale(1.05);
+}
+
+/* Rediseño: Título principal más grande y jerárquico */
+.admin-header h1 {
+  font-size: 3.2rem; 
+  color: var(--text-dark);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.admin-subtitle {
+  color: var(--text-light);
+  margin-top: 0.75rem;
+  font-weight: 500;
+  padding-left: 0.2rem;
+}
+
+.admin-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.metric-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-rose { border-left: 6px solid var(--rose-dark); }
+.card-blue { border-left: 6px solid var(--blue-dark); }
+.card-green { border-left: 6px solid var(--green-dark); }
+
+.metric-card h4 {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-card strong {
+  font-size: 2.2rem;
+  color: var(--text-dark);
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.status-online {
+  font-size: 1.3rem !important;
+  color: var(--green-dark) !important;
+}
+
+.admin-section {
+  margin-bottom: 4rem;
+}
+
+.admin-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--blue-dark);
+  padding-left: 0.8rem;
+}
+
+.messages-stack {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.message-row-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(162, 199, 231, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  border: 1px solid var(--blue-light);
+  transition: var(--transition);
+}
+
+.message-row-card:hover {
+  border-color: var(--rose-medium);
+}
+
+.message-info-block h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.message-meta {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin: 0.3rem 0 0.8rem 0;
+}
+
+.message-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background-color: var(--rose-light);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--rose-dark);
+}
+
+.btn-delete {
+  background-color: #e53e3e;
+  color: var(--white);
+  padding: 0.7rem 1.4rem;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-delete:hover {
+  background-color: #c53030;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(197, 48, 48, 0.3);
+}
+
+.admin-table-wrapper {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  border: 1px solid var(--blue-light);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  padding: 1.2rem 1.5rem;
+  background-color: var(--blue-light);
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.admin-table td {
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--blue-light);
+}
+
+.admin-table tbody tr:hover {
+  background-color: var(--rose-light);
+}
+
+.table-id {
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.table-name {
+  font-weight: 600;
+}
+
+.table-badge {
+  background-color: var(--blue-medium);
+  color: var(--text-dark);
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.table-price {
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.empty-notice {
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.message-date-badge {
+  font-size: 0.88rem;
+  color: var(--text-light);
+  margin-bottom: 0.6rem;
+  font-family: var(--font-nav), sans-serif;
+  background-color: var(--blue-light);
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+.message-date-badge strong {
+  color: var(--green-dark);
+}

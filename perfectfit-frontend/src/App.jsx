@@ -1,42 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Trash2 } from 'lucide-react'; 
+import axios from 'axios';
 import './App.css';
 
-// Importación de tus páginas reales
+// Importación de tus páginas reales modulares
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import Contact from './pages/Contact';
 import Recommender from './pages/Recommender';
 import Login from './pages/Login';
+import Admin from './pages/Admin'; // <- 1. Importación limpia del nuevo Panel Profesional
 import Footer from './pages/Footer';
 
-// Componente para resolver el scroll instantáneo hacia arriba
+// Componente para resolver el scroll instantáneo hacia arriba automáticamente
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0); // Salto inmediato al tope sin transiciones molestas
+    window.scrollTo(0, 0); // Salto inmediato al tope sin transiciones
   }, [pathname]);
   return null;
-}
-
-// Componente para el Panel de Administración exigido por el curso
-function AdminPanel() {
-  return (
-    <div style={{ padding: '5rem 2rem', textAlign: 'center', minHeight: '80vh', backgroundColor: '#f7fafc' }}>
-      <h1 style={{ fontSize: '2.5rem', color: 'var(--green-dark)', marginBottom: '1rem' }}>🛡️ Panel de Gestión Interno</h1>
-      <p style={{ fontSize: '1.2rem', color: 'var(--text-dark)', maxWidth: '600px', margin: '0 auto' }}>
-        ¡Bienvenida, Valentina! Aquí podrás gestionar los 16 platos de tu menú funcional y revisar los mensajes de tus clientes en Cartagena.
-      </p>
-    </div>
-  );
 }
 
 function App() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [carrito, setCarrito] = useState([]); // Estado del carrito
   const [verCarrito, setVerCarrito] = useState(false); // Estado para abrir/cerrar modal
-
+  
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
   const cerrarMenu = () => setMenuAbierto(false);
 
@@ -58,7 +48,7 @@ function App() {
     setCarrito((prevCarrito) => prevCarrito.filter((item) => item.id !== id));
   };
 
-  // LÓGICA: Cálculos de totales
+  // LÓGICA: Cálculos automáticos de totales
   const totalArticulos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
   const precioTotal = carrito.reduce((acc, item) => acc + (item.price * item.cantidad), 0);
 
@@ -69,7 +59,7 @@ function App() {
       {/* Navbar Superior con tu diseño original exacto + Carrito Integrado */}
       <nav className="navbar-principal">
         
-        {/* Botón de Hamburguesa */}
+        {/* Botón de Hamburguesa para Celulares */}
         <button onClick={toggleMenu} className="boton-hamburguesa" aria-label="Menu de navegación">
           {menuAbierto ? <X size={26} /> : <Menu size={26} />}
         </button>
@@ -83,6 +73,7 @@ function App() {
             <NavLink to="/catalogo" onClick={cerrarMenu} className="nav-link-custom">Catálogo</NavLink>
             <NavLink to="/recomendador" onClick={cerrarMenu} className="nav-link-custom">IA Nutrición</NavLink>
             <NavLink to="/contacto" onClick={cerrarMenu} className="nav-link-custom">Contacto</NavLink>
+            
             <button
               type="button"
               onClick={() => setVerCarrito(!verCarrito)}
@@ -99,7 +90,6 @@ function App() {
             <NavLink to="/login" onClick={cerrarMenu} className="nav-link-custom boton-admin-derecho">Admin</NavLink>
           </div>
         </div>
-
       </nav>
 
       {/* VENTANA MODAL FLOTANTE DEL CARRITO */}
@@ -151,7 +141,7 @@ function App() {
         </div>
       )}
 
-      {/* Selector de Pantallas */}
+      {/* Selector de Pantallas Dinámico */}
       <main style={{ minHeight: '85vh', width: '100%', display: 'block', clear: 'both' }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -159,10 +149,11 @@ function App() {
           <Route path="/contacto" element={<Contact />} />
           <Route path="/recomendador" element={<Recommender />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<AdminPanel />} /> 
+          <Route path="/admin" element={<Admin />} /> {/* <- 2. Vinculado a la nueva pagina real */}
         </Routes>
       </main>
       
+      {/* Footer Global */}
       <Footer />
     </Router>
   );
