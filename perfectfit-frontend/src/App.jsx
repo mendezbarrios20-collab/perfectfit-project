@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Trash2 } from 'lucide-react'; 
-import axios from 'axios';
 import './App.css';
 
 // Importación de tus páginas reales modulares
@@ -20,6 +19,12 @@ function ScrollToTop() {
     window.scrollTo(0, 0); // Salto inmediato al tope sin transiciones
   }, [pathname]);
   return null;
+}
+
+function RutaProtegida({ children }) {
+  return localStorage.getItem('token')
+    ? children
+    : <Navigate to="/login" replace />;
 }
 
 function App() {
@@ -149,7 +154,7 @@ function App() {
           <Route path="/contacto" element={<Contact />} />
           <Route path="/recomendador" element={<Recommender />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<Admin />} /> {/* <- 2. Vinculado a la nueva pagina real */}
+          <Route path="/admin" element={<RutaProtegida><Admin /></RutaProtegida>} />
         </Routes>
       </main>
       

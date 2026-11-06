@@ -1,30 +1,4 @@
-/**
- * @desc    Registrar un nuevo administrador
- * @route   POST /api/auth/register
- * @access  Public
- */
-export const registrarUsuario = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        error: 'Por favor, ingrese todos los campos obligatorios.'
-      });
-    }
-
-    // Simulamos la creación exitosa y devolvemos un token de prueba estructurado
-    res.status(201).json({
-      success: true,
-      message: '¡Administrador registrado exitosamente de forma local! 🛡️',
-      user: { name, email, role: 'admin' },
-      token: 'jwt_mock_token_perfectfit_secret_12345'
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+import { crearSesion, revocarSesion } from '../middleware/authMiddleware.js';
 
 /**
  * @desc    Iniciar sesión (Login)
@@ -45,11 +19,12 @@ export const loginUsuario = async (req, res) => {
     // Simulación de credenciales correctas para tu Login de React
     // Si el usuario escribe este correo de prueba, le damos acceso total
     if (email === 'admin@perfectfit.com' && password === 'admin123') {
+      const token = crearSesion();
       return res.status(200).json({
         success: true,
         message: '¡Inicio de sesión exitoso! Bienvenido al Panel PerfectFit 🥗✨',
         user: { name: 'Valeria Méndez', email, role: 'admin' },
-        token: 'jwt_mock_token_perfectfit_secret_12345'
+        token
       });
     }
 
@@ -61,4 +36,9 @@ export const loginUsuario = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
+};
+
+export const cerrarSesion = (req, res) => {
+  revocarSesion(req.authToken);
+  res.status(200).json({ success: true, message: 'Sesión cerrada correctamente.' });
 };

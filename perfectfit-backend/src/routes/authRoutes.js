@@ -1,10 +1,10 @@
 import express from 'express';
-import { registrarUsuario, loginUsuario } from '../controllers/authController.js';
+import { cerrarSesion, loginUsuario } from '../controllers/authController.js';
+import { autenticarToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Rutas para la autenticación y protección del panel
-router.post('/register', registrarUsuario); // POST /api/auth/register -> Crear cuenta de admin
-router.post('/login', loginUsuario);       // POST /api/auth/login -> Iniciar sesión desde React
+router.post('/login', loginUsuario);
+router.post('/logout', autenticarToken, cerrarSesion);
 
 export default router;

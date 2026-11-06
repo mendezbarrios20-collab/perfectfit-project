@@ -44,7 +44,7 @@
 }
 
 /* ==========================================================================
-   RESET / REGLAS GENERALES
+   RESET / REGLAS GENERALES WITH DYNAMIC FONT WEIGHTS
    ========================================================================== */
 * {
   margin: 0;
@@ -54,6 +54,7 @@
 
 body {
   font-family: var(--font-body);
+  font-weight: 400; /* Fuerza a las descripciones y párrafos a usar Montserrat Regular */
   background-color: var(--bg-light);
   color: var(--text-dark);
   line-height: 1.6;
@@ -62,14 +63,22 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-title);
-  font-weight: 700;
+  font-weight: 700; /* Fuerza a tus encabezados a usar Playfair Display Bold */
   color: var(--text-dark);
+}
+
+/* Regla especial para citas de bienestar o frases inspiracionales en cursiva pura de Playfair */
+.cita-decorativa, blockquote {
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-style: italic; /* Forzará la descarga de Playfair Display Italic */
 }
 
 a {
   text-decoration: none;
   color: inherit;
   font-family: var(--font-nav);
+  font-weight: 500; /* Fuerza a los enlaces normales a usar tu Nunito Medium prolijo */
 }
 
 /* Contenedor responsivo estándar para centrar el contenido */
@@ -86,7 +95,7 @@ a {
   display: inline-block;
   padding: 0.8rem 2rem;
   font-family: var(--font-nav);
-  font-weight: 700;
+  font-weight: 700; /* Fuerza a los botones a usar tu Nunito Bold */
   border-radius: var(--border-radius);
   border: none;
   cursor: pointer;
@@ -124,7 +133,7 @@ a {
 .nav-link-custom {
   position: relative;
   font-family: var(--font-nav);
-  font-weight: 500;
+  font-weight: 500; /* Forzar Nunito Medium en la barra de navegacion superior */
   color: var(--text-dark);
   padding: 0.5rem 0;
   transition: var(--transition);
@@ -150,7 +159,7 @@ a {
 /* Cuando la ruta coincide exactamente, la línea se expande al 100% */
 .nav-link-custom.active {
   color: var(--rose-dark);
-  font-weight: 700;
+  font-weight: 700; /* Al estar activo el link se vuelve Nunito Bold de forma dinamica */
 }
 
 .nav-link-custom.active::after {

@@ -1,11 +1,15 @@
 import express from 'express';
-import { obtenerProductos, crearProducto } from '../controllers/productController.js';
-
+import { obtenerProductos, crearProducto, actualizarProducto } from '../controllers/productController.js';
+import { autenticarToken } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
-// Define las rutas para el catálogo de platos
+// Ruta para la raíz de productos: Descargar (GET) y Crear (POST)
 router.route('/')
-  .get(obtenerProductos)   // GET /api/products -> Para traer los 16 platos al catálogo de React
-  .post(crearProducto);    // POST /api/products -> Para que el administrador cree platos nuevos
+  .get(obtenerProductos)
+  .post(autenticarToken, crearProducto);
+
+// Ruta modular por ID: Recibe el ID numérico y procesa la actualización (PUT)
+router.route('/:id')
+  .put(autenticarToken, actualizarProducto);
 
 export default router;

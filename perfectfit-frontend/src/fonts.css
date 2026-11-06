@@ -1,35 +1,27 @@
 /* ==========================================================================
-   REGISTRO DEFENSIVO DE FUENTES LOCALES (PERFECTFIT BOWL)
+   REGISTRO ENRIQUECIDO DE FUENTES LOCALES (SISTEMA DE DISEÑO PERFECTFIT)
    ========================================================================== */
 
-/* 1. PLAYFAIR DISPLAY (TÍTULOS) */
+/* 1. PLAYFAIR DISPLAY (ESTILOS ELEGANTES PARA TÍTULOS Y CITAS) */
 @font-face {
     font-family: "Playfair Display";
     src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Regular.ttf") format("truetype");
     font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Playfair Display";
+    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic; /* Ideal para tus citas decorativas de bienestar */
 }
 @font-face {
     font-family: "Playfair Display";
     src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Bold.ttf") format("truetype");
     font-weight: 700;
+    font-style: normal;
 }
-@font-face {
-    font-family: "Playfair Display";
-    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-}
-@font-face {
-    font-family: "Playfair Display";
-    src: url("./assets/fonts/Playfair-Display/PlayfairDisplay-Black.ttf") format("truetype");
-    font-weight: 900;
-}
-
-/* 2. MONTSERRAT (CUERPO Y PÁRRAFOS) */
-@font-face {
-    font-family: "Montserrat";
-    src: url("./assets/fonts/Montserrat/Montserrat-ExtraLight.ttf") format("truetype");
-    font-weight: 200;
-}
+/* 2. MONTSERRAT (ESTILOS MODERNOS PARA PARRAFOS Y TEXTOS INFORMATIVOS) */
 @font-face {
     font-family: "Montserrat";
     src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
@@ -37,26 +29,16 @@
 }
 @font-face {
     font-family: "Montserrat";
+    src: url("./assets/fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
+    font-weight: 500;
+}
+@font-face {
+    font-family: "Montserrat";
     src: url("./assets/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
     font-weight: 700;
 }
-@font-face {
-    font-family: "Montserrat";
-    src: url("./assets/fonts/Montserrat/Montserrat-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-}
-@font-face {
-    font-family: "Montserrat";
-    src: url("./assets/fonts/Montserrat/Montserrat-Black.ttf") format("truetype");
-    font-weight: 900;
-}
 
-/* 3. NUNITO (BOTONES Y MENÚS - Homologado con mayúscula) */
-@font-face {
-    font-family: "Nunito";
-    src: url("./assets/fonts/Nunito/Nunito-ExtraLight.ttf") format("truetype");
-    font-weight: 200;
-}
+/* 3. NUNITO (ESTILOS REDONDEADOS Y FLUIDOS PARA BOTONES E INTERACCIONES) */
 @font-face {
     font-family: "Nunito";
     src: url("./assets/fonts/Nunito/Nunito-Regular.ttf") format("truetype");
@@ -64,16 +46,11 @@
 }
 @font-face {
     font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/Nunito-Medium.ttf") format("truetype");
+    font-weight: 500; /* Ideal para tus enlaces de navegación */
+}
+@font-face {
+    font-family: "Nunito";
     src: url("./assets/fonts/Nunito/Nunito-Bold.ttf") format("truetype");
-    font-weight: 700;
-}
-@font-face {
-    font-family: "Nunito";
-    src: url("./assets/fonts/Nunito/Nunito-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-}
-@font-face {
-    font-family: "Nunito";
-    src: url("./assets/fonts/Nunito/Nunito-Black.ttf") format("truetype");
-    font-weight: 900;
+    font-weight: 700; /* Ideal para tus botones de acción principal */
 }

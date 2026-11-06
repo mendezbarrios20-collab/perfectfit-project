@@ -45,7 +45,7 @@
 .contact-cursor {
   color: var(--rose-light);
   animation: parpadeoCursor 0.8s infinite;
-  font-weight: 300;
+  font-weight: 400;
   margin-left: 2px;
 }
 

@@ -36,7 +36,7 @@ function Login() {
       if (respuesta.data.success) {
         console.log("¡Ingreso exitoso al sistema de gestión!", respuesta.data);
         
-        // Guardamos el token de sesión seguro en el navegador
+        // El backend valida este token al recibir solicitudes de administración.
         localStorage.setItem('token', respuesta.data.token);
         
         // Redireccionamos de inmediato al Administrador hacia su panel

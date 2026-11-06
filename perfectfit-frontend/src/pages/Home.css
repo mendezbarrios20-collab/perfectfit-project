@@ -55,7 +55,7 @@
 .home-hero-tagline {
   font-family: var(--font-nav);
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--blue-light);
   margin-bottom: 1rem;
   font-style: italic;
@@ -260,7 +260,7 @@
 }
 
 .featured-card-price {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1.25rem;
   color: var(--text-dark);
 }
@@ -312,7 +312,7 @@
   font-size: 1.25rem;
   font-family: var(--font-nav);
   color: var(--blue-light);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.6;
   text-shadow: 0 1px 5px rgba(0,0,0,0.4);
 }

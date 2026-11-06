@@ -87,7 +87,7 @@
 .recommendation-price {
   flex: 0 1 auto;
   overflow-wrap: anywhere;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--green-dark);
   font-size: 1.15rem;
   font-family: var(--font-nav);
@@ -101,7 +101,7 @@
   padding: 1.8rem;
   border-radius: 20px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.7;
   box-shadow: 0 15px 30px rgba(0,0,0,0.2);
   border: 1px solid var(--yellow-dark);

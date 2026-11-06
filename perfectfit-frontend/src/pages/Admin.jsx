@@ -1,46 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Trash2, Edit3, Check, X } from 'lucide-react';
+import { Trash2, Edit3, Check, X, LogOut } from 'lucide-react';
 import './Admin.css';
 import imgLogoSmall from '../assets/images/solo-logo.jpg';
 
 function Admin() {
+  const navigate = useNavigate();
   const [mensajes, setMensajes] = useState([]);
   const [platos, setPlatos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
-  // Estados exclusivos para el motor de edición en vivo
+  // ESTADOS DEL MOTOR DE EDICIÓN EN LÍNEA
   const [editandoId, setEditandoId] = useState(null);
   const [formEditar, setFormEditar] = useState({ name: '', price: '', category: 'desayunos' });
+
+  const authConfig = () => ({
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  });
+
+  const manejarErrorSesion = useCallback((err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('token');
+      navigate('/login', { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const cargarDatosPanel = async () => {
       try {
         setCargando(true);
-        const resMensajes = await axios.get('http://localhost:5000/api/messages');
+        const resMensajes = await axios.get('http://localhost:5000/api/messages', authConfig());
         if (resMensajes.data.success) setMensajes(resMensajes.data.data);
 
-        const resPlatos = await axios.get('http://localhost:5000/api/products');
+        const resPlatos = await axios.get('http://localhost:5000/api/products', authConfig());
         if (resPlatos.data.success) setPlatos(resPlatos.data.data);
       } catch (err) {
         console.error("Error al cargar la consola administrativa:", err);
+        manejarErrorSesion(err);
       } finally {
         setCargando(false);
       }
     };
     cargarDatosPanel();
-  }, []);
+  }, [manejarErrorSesion]);
 
   const handleBorrarMensaje = async (id) => {
     if (window.confirm("¿Estás segura de que deseas eliminar este mensaje?")) {
       try {
-        const respuesta = await axios.delete(`http://localhost:5000/api/messages/${id}`);
+        const respuesta = await axios.delete(`http://localhost:5000/api/messages/${id}`, authConfig());
         if (respuesta.data.success) {
           setMensajes(mensajes.filter(msg => msg._id !== id));
           alert("✨ Mensaje removido con éxito.");
         }
       } catch (err) {
         console.error(err);
+        manejarErrorSesion(err);
       }
     }
   };
@@ -56,14 +71,26 @@ function Admin() {
 
   const guardarEdicion = async (id) => {
     try {
-      const respuesta = await axios.put(`http://localhost:5000/api/products/${id}`, formEditar);
+      const respuesta = await axios.put(`http://localhost:5000/api/products/${id}`, formEditar, authConfig());
       if (respuesta.data.success) {
         setPlatos(platos.map(p => p.id === id ? { ...p, name: formEditar.name, price: Number(formEditar.price), category: formEditar.category } : p));
         setEditandoId(null);
         alert("🥗 ¡Plato actualizado con éxito en el menú!");
       }
     } catch (err) {
-      console.error("Error al actualizar el plato:", err);
+      console.error(err);
+      manejarErrorSesion(err);
+    }
+  };
+
+  const cerrarSesion = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/auth/logout', {}, authConfig());
+    } catch (err) {
+      console.error('No se pudo invalidar la sesión en el servidor:', err);
+    } finally {
+      localStorage.removeItem('token');
+      navigate('/login', { replace: true });
     }
   };
 
@@ -72,12 +99,16 @@ function Admin() {
   return (
     <div className="admin-page">
       <div className="container">
+        
         <header className="admin-header">
           <div className="admin-brand-wrapper">
             <img src={imgLogoSmall} alt="Logo PerfectFit Admin" className="admin-logo-img" />
             <h1>Consola de Gestión Interna</h1>
           </div>
           <p className="admin-subtitle">Panel de administración · Valentina Barrios Méndez · Cartagena</p>
+          <button type="button" className="btn btn-secondary" onClick={cerrarSesion}>
+            <LogOut size={16} /> Cerrar sesión
+          </button>
         </header>
 
         <section className="admin-metrics-grid">
@@ -105,10 +136,7 @@ function Admin() {
                 <article key={msg._id} className="message-row-card">
                   <div className="message-info-block">
                     <h3>{msg.name}</h3>
-                    {/* MEJORA UX: Formateo de fecha y hora local para Cartagena de forma limpia */}
-                    <p className="message-meta">
-                      📧 {msg.email} | 📱 Celular: {msg.phone}
-                    </p>
+                    <p className="message-meta">📧 {msg.email} | 📱 Celular: {msg.phone}</p>
                     <p className="message-date-badge">
                       📅 Recibido el: <strong>{new Date(msg.createdAt).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}</strong>
                     </p>
