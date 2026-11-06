@@ -1,87 +1,85 @@
-// Array global en la memoria del servidor para simular la base de datos de forma local y persistente mientras corre el proceso
-const baseDatosMensajesLocales = [
-  { _id: '1', name: 'Carlos Mendoza', email: 'carlos@fit.com', phone: '3005551234', message: 'Deseo cotizar 5 Overnight Oats para mi plan semanal en Bocagrande.', createdAt: new Date() }
-];
+import Message from '../models/Message.js';
 
 /**
- * @desc    Registrar un nuevo mensaje de contacto en la base de datos local de contingencia
- * @route   POST /api/messages
- * @access  Public
+ * @desc Registrar un mensaje de contacto en MongoDB
+ * @route POST /api/messages
+ * @access Public
  */
 export const registrarMensaje = async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
+    const nombre = typeof name === 'string' ? name.trim() : '';
+    const correo = typeof email === 'string' ? email.trim() : '';
+    const telefono = typeof phone === 'string' ? phone.trim() : '';
+    const contenido = typeof message === 'string' ? message.trim() : '';
 
-    if (!name || !email || !phone || !message) {
+    if (!nombre || !correo || !telefono || !contenido) {
       return res.status(400).json({
         success: false,
         error: 'Todos los campos son obligatorios.'
       });
     }
 
-    // Creamos el objeto imitando el esquema técnico de Mongoose
-    const nuevoMensaje = {
-      _id: 'msg_local_' + Math.random().toString(36).substr(2, 9),
-      name,
-      email,
-      phone,
-      message,
-      createdAt: new Date()
-    };
+    const nuevoMensaje = await Message.create({
+      name: nombre,
+      email: correo,
+      phone: telefono,
+      message: contenido
+    });
 
-    // Almacenamos el mensaje en nuestra lista local unificada
-    baseDatosMensajesLocales.push(nuevoMensaje);
-    console.log('✉️ Nuevo mensaje persistido con éxito en el cluster local:', nuevoMensaje);
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: '¡Mensaje recibido y guardado con éxito de forma local! 🥗✨',
+      message: 'Mensaje guardado correctamente.',
       data: nuevoMensaje
     });
   } catch (error) {
-    console.error('❌ Error en el controlador de contingencia:', error);
-    res.status(500).json({ success: false, error: 'Error interno en el servidor.' });
+    console.error('Error al registrar el mensaje:', error);
+    return res.status(500).json({ success: false, error: 'No se pudo guardar el mensaje.' });
   }
 };
 
 /**
- * @desc    Obtener todos los mensajes guardados (Para la bandeja de entrada del Administrador)
- * @route   GET /api/messages
- * @access  Public
+ * @desc Obtener los mensajes recibidos para la bandeja administrativa
+ * @route GET /api/messages
+ * @access Admin
  */
 export const obtenerMensajes = async (req, res) => {
   try {
-    // El administrador lee directamente los mensajes acumulados en la memoria local
-    res.status(200).json({
+    const mensajes = await Message.find().sort({ createdAt: -1 }).lean();
+    return res.status(200).json({
       success: true,
-      count: baseDatosMensajesLocales.length,
-      data: baseDatosMensajesLocales
+      count: mensajes.length,
+      data: mensajes
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error('Error al obtener los mensajes:', error);
+    return res.status(500).json({ success: false, error: 'No se pudieron obtener los mensajes.' });
   }
 };
 
 /**
- * @desc    Eliminar un mensaje por su ID de la bandeja de entrada
- * @route   DELETE /api/messages/:id
- * @access  Public
+ * @desc Eliminar un mensaje por su ID
+ * @route DELETE /api/messages/:id
+ * @access Admin
  */
 export const eliminarMensaje = async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    // Buscamos el índice del elemento en nuestro array local
-    const indice = baseDatosMensajesLocales.findIndex(msg => msg._id === id);
-    
-    if (indice !== -1) {
-      baseDatosMensajesLocales.splice(indice, 1);
-      console.log(`🗑️ Mensaje con ID ${id} eliminado del cluster local por el administrador.`);
-      return res.status(200).json({ success: true, message: 'Mensaje eliminado correctamente.' });
+    const mensaje = await Message.findByIdAndDelete(req.params.id);
+
+    if (!mensaje) {
+      return res.status(404).json({ success: false, error: 'Mensaje no encontrado.' });
     }
 
-    res.status(404).json({ success: false, error: 'Mensaje no encontrado.' });
+    return res.status(200).json({
+      success: true,
+      message: 'Mensaje eliminado correctamente.'
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    if (error.name === 'CastError') {
+      return res.status(400).json({ success: false, error: 'El ID del mensaje no es válido.' });
+    }
+
+    console.error('Error al eliminar el mensaje:', error);
+    return res.status(500).json({ success: false, error: 'No se pudo eliminar el mensaje.' });
   }
 };

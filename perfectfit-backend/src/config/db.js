@@ -1,14 +1,26 @@
 import mongoose from 'mongoose';
+import Product from '../models/Product.js';
+import menuInicial from '../data/menuInicial.js';
 
 const conectarDB = async () => {
   try {
-    // Sistema híbrido profesional para saltar bloqueos de red
-    console.log("🍃 Inicializando Persistencia de Datos Unificada PerfectFit...");
-    console.log("🟢 Base de Datos Conectada Correctamente: Local-Data-Cluster [Modo Contingencia Real]");
+    const { MONGODB_URI } = process.env;
+
+    if (!MONGODB_URI) {
+      throw new Error('Falta MONGODB_URI en las variables de entorno.');
+    }
+
+    await mongoose.connect(MONGODB_URI);
+    console.log('🟢 Conexión con MongoDB establecida.');
+
+    const cantidadProductos = await Product.countDocuments();
+    if (cantidadProductos === 0) {
+      await Product.insertMany(menuInicial);
+      console.log(`🥗 Menú inicial cargado: ${menuInicial.length} productos.`);
+    }
   } catch (error) {
-    console.error(`❌ Error al conectar a la Base de Datos: ${error.message}`);
-    // Dejamos comentado el cierre para que tu servidor NO se apague nunca por la red
-    // process.exit(1);
+    console.error(`❌ No se pudo inicializar MongoDB: ${error.message}`);
+    throw error;
   }
 };
 

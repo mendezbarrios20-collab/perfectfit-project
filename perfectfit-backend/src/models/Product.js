@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 // Esquema técnico y estricto para los platos del catálogo de PerfectFit Bowl
 const productSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+    required: true,
+    unique: true,
+    min: 1
+  },
   name: {
     type: String,
     required: [true, 'El nombre del plato es obligatorio.'],
@@ -24,6 +30,11 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, 'La categoría (Desayunos, Snacks, Pre/Post Entreno) es obligatoria.'],
     enum: ['desayunos', 'snacks', 'pre-entreno', 'post-entreno']
+  },
+  objective: {
+    type: String,
+    required: true,
+    enum: ['saciedad', 'energia', 'recuperacion']
   },
   macros: {
     calories: { type: Number, required: true },

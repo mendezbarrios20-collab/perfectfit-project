@@ -25,11 +25,20 @@ function Catalog({ alAgregarPlato }) {
   const [categoriaActiva, setCategoriaActiva] = useState('todos');
   const [error, setError] = useState('');
 
-  const mapaImagenes = {
+  const mapaImagenesPorId = {
     1: imgAvena, 2: imgWaffles, 3: imgTostada, 4: imgAcai, 5: imgMuffins,
     6: imgPudin, 7: imgGarbanzos, 8: imgTrufas, 9: imgBarritas, 10: imgArrozInflado,
     11: imgPancakes, 12: imgSmoothie, 13: imgSalmon, 14: imgParfait, 15: imgWrap,
     16: imgArrozCurry
+  };
+
+  const mapaImagenesPorNombre = {
+    'Avena.jpeg': imgAvena, 'Waffles.jpg': imgWaffles, 'Tostada.jpg': imgTostada,
+    'Acai.jpg': imgAcai, 'Muffins.jpg': imgMuffins, 'Pudin.jpg': imgPudin,
+    'Garbanzos.jpg': imgGarbanzos, 'Trufas.jpeg': imgTrufas, 'Barritas.jpg': imgBarritas,
+    'ArrozInflado.jpg': imgArrozInflado, 'Pancakes.jpg': imgPancakes, 'Smoothie.jpg': imgSmoothie,
+    'Salmon.jpg': imgSalmon, 'parfait.jpg': imgParfait, 'Wrap.avif': imgWrap,
+    'ArrozCurry.jpg': imgArrozCurry
   };
 
   const categorias = [
@@ -88,12 +97,12 @@ function Catalog({ alAgregarPlato }) {
 
         <div className="catalog-grid">
           {productosFiltrados.map((producto) => {
-            // 2. CORREGIDO: Extraemos el ID dinámico adaptado a entorno local e híbrido de base de datos
             const idPlato = producto.id || producto._id;
+            const imagenPlato = mapaImagenesPorNombre[producto.image] || mapaImagenesPorId[idPlato];
             return (
               <article key={idPlato} className="perfectfit-card">
                 <div className="perfectfit-card-img-wrapper">
-                  <img src={mapaImagenes[idPlato]} alt={producto.name} loading="lazy" />
+                  <img src={imagenPlato} alt={producto.name} loading="lazy" />
                   <span className="category-badge">{producto.category}</span>
                 </div>
                 <div className="card-body">
