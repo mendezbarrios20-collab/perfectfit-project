@@ -1,5 +1,5 @@
 import express from 'express';
-import { obtenerProductos, crearProducto, actualizarProducto } from '../controllers/productController.js';
+import { obtenerProductos, crearProducto, actualizarProducto, eliminarProducto } from '../controllers/productController.js';
 import { autenticarToken, autorizarAdmin } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.route('/')
 
 // Ruta modular por ID: Recibe el ID numérico y procesa la actualización (PUT)
 router.route('/:id')
-  .put(autenticarToken, autorizarAdmin, actualizarProducto);
+  .put(autenticarToken, autorizarAdmin, actualizarProducto)
+  .delete(autenticarToken, autorizarAdmin, eliminarProducto);
 
 export default router;

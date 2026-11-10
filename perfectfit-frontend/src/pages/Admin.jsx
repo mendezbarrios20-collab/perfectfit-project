@@ -8,6 +8,7 @@ import imgLogoSmall from '../assets/images/solo-logo.jpg';
 function Admin() {
   const navigate = useNavigate();
   const [mensajes, setMensajes] = useState([]);
+  const [mensajesMarcando, setMensajesMarcando] = useState(() => new Set());
   const [platos, setPlatos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -57,6 +58,35 @@ function Admin() {
         console.error(err);
         manejarErrorSesion(err);
       }
+    }
+  };
+
+  const handleMarcarMensajeLeido = async (id) => {
+    setMensajesMarcando((actuales) => new Set(actuales).add(id));
+
+    try {
+      const respuesta = await axios.patch(
+        `http://localhost:5000/api/messages/${id}/leer`,
+        {},
+        authConfig()
+      );
+
+      if (!respuesta.data.success) {
+        throw new Error(respuesta.data.error || 'No se pudo marcar el mensaje como leído.');
+      }
+
+      setMensajes((actuales) => actuales.map((msg) => (
+        msg._id === id ? { ...msg, ...respuesta.data.data, read: true } : msg
+      )));
+    } catch (err) {
+      console.error('Error al marcar el mensaje como leído:', err);
+      manejarErrorSesion(err);
+    } finally {
+      setMensajesMarcando((actuales) => {
+        const siguientes = new Set(actuales);
+        siguientes.delete(id);
+        return siguientes;
+      });
     }
   };
 
@@ -142,9 +172,27 @@ function Admin() {
                     </p>
                     <p className="message-text">"{msg.message}"</p>
                   </div>
-                  <button onClick={() => handleBorrarMensaje(msg._id)} className="btn btn-delete">
-                    <Trash2 size={16} /> Borrar
-                  </button>
+                  <div className="admin-actions-btn-group">
+                    {msg.read ? (
+                      <span className="status-online">✅ Visto</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleMarcarMensajeLeido(msg._id)}
+                        className="btn btn-secondary"
+                        disabled={mensajesMarcando.has(msg._id)}
+                      >
+                        📩 {mensajesMarcando.has(msg._id) ? 'Guardando...' : 'Marcar como leído'}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleBorrarMensaje(msg._id)}
+                      className="btn btn-delete"
+                    >
+                      <Trash2 size={16} /> Borrar
+                    </button>
+                  </div>
                 </article>
               ))}
             </div>

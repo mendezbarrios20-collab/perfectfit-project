@@ -23,6 +23,10 @@ const messageSchema = new mongoose.Schema({
     required: [true, 'El contenido del mensaje o pedido es obligatorio.'],
     trim: true
   },
+  read: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now // Guarda automáticamente la fecha y hora exacta del envío

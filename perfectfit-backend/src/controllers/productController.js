@@ -134,3 +134,32 @@ export const actualizarProducto = async (req, res) => {
     return res.status(500).json({ success: false, error: 'No se pudo actualizar el producto.' });
   }
 };
+
+/**
+ * @desc Eliminar un producto del menú
+ * @route DELETE /api/products/:id
+ * @access Admin
+ */
+export const eliminarProducto = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ success: false, error: 'El ID del plato no es válido.' });
+    }
+
+    const producto = await Product.findOneAndDelete({ id });
+
+    if (!producto) {
+      return res.status(404).json({ success: false, error: 'Plato no encontrado en el menú.' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Producto eliminado correctamente.'
+    });
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    return res.status(500).json({ success: false, error: 'No se pudo eliminar el producto.' });
+  }
+};

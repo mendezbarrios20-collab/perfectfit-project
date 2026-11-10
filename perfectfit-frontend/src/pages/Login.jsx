@@ -39,8 +39,8 @@ function Login() {
         // El backend valida este token al recibir solicitudes de administración.
         localStorage.setItem('token', respuesta.data.token);
         
-        // Redireccionamos de inmediato al Administrador hacia su panel
-        navigate('/admin'); 
+        const role = respuesta.data.user?.role;
+        navigate(role === 'admin' ? '/admin' : '/recomendador');
       }
     } catch (err) {
       console.error("Error detectado en el inicio de sesión:", err);

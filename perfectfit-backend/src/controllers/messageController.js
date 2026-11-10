@@ -58,6 +58,34 @@ export const obtenerMensajes = async (req, res) => {
 };
 
 /**
+ * @desc Marcar un mensaje como leído
+ * @route PATCH /api/messages/:id/leer
+ * @access Admin
+ */
+export const marcarMensajeLeido = async (req, res) => {
+  try {
+    const mensaje = await Message.findByIdAndUpdate(
+      req.params.id,
+      { $set: { read: true } },
+      { new: true }
+    );
+
+    if (!mensaje) {
+      return res.status(404).json({ success: false, error: 'Mensaje no encontrado.' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Mensaje marcado como leído.',
+      data: mensaje
+    });
+  } catch (error) {
+    console.error('Error al marcar el mensaje como leído:', error);
+    return res.status(500).json({ success: false, error: 'No se pudo actualizar el mensaje.' });
+  }
+};
+
+/**
  * @desc Eliminar un mensaje por su ID
  * @route DELETE /api/messages/:id
  * @access Admin
