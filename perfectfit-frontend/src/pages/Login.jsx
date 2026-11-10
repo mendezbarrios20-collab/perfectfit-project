@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // <- Conexión asíncrona oficial con el servidor
 import './Login.css';
 import imgLogoCorporate from '../assets/images/solo-logo.jpg';
@@ -116,6 +116,9 @@ function Login() {
             <button type="submit" className="btn btn-secondary login-submit-btn">
               Autenticar Entrada
             </button>
+            <p className="register-link">
+              ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
+            </p>
           </form>
         </div>
 

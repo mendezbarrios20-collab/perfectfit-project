@@ -133,6 +133,23 @@
   cursor: pointer;
 }
 
+.register-link {
+  margin-top: 1.25rem;
+  color: #718096;
+  font-family: var(--font-nav);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.register-link a {
+  color: #c65c8b;
+  font-weight: 700;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
 /* Adaptación responsiva para smartphones */
 @media (max-width: 768px) {
   .login-canvas-container {

@@ -9,6 +9,7 @@ import Catalog from './pages/Catalog';
 import Contact from './pages/Contact';
 import Recommender from './pages/Recommender';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Admin from './pages/Admin'; // <- 1. Importación limpia del nuevo Panel Profesional
 import Footer from './pages/Footer';
 
@@ -154,6 +155,7 @@ function App() {
           <Route path="/contacto" element={<Contact />} />
           <Route path="/recomendador" element={<Recommender />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<RutaProtegida><Admin /></RutaProtegida>} />
         </Routes>
       </main>
