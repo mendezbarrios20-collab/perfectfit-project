@@ -1,13 +1,13 @@
 import express from 'express';
 import { registrarMensaje, obtenerMensajes, eliminarMensaje } from '../controllers/messageController.js';
-import { autenticarToken } from '../middleware/authMiddleware.js';
+import { autenticarToken, autorizarAdmin } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/')
   .post(registrarMensaje)
-  .get(autenticarToken, obtenerMensajes);
+  .get(autenticarToken, autorizarAdmin, obtenerMensajes);
 
 router.route('/:id')
-  .delete(autenticarToken, eliminarMensaje);
+  .delete(autenticarToken, autorizarAdmin, eliminarMensaje);
 
 export default router;
