@@ -1,175 +1,145 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // <- Conexión obligatoria con tu API local
+import { useEffect, useRef, useState } from 'react';
 import './Recommender.css';
-import imgFondoRecomendador from '../assets/images/Acai.jpg';
 
 function Recommender() {
-  const [productos, setProductos] = useState([]); // <- Estado para guardar los platos reales del servidor
-  const [objective, setObjective] = useState('');
-  const [budget, setBudget] = useState('');
-  const [recommendations, setRecommendations] = useState([]);
-  const [searched, setSearched] = useState(false);
-  const [error, setError] = useState('');
-  const [errorConexion, setErrorConexion] = useState('');
+  const [abierto, setAbierto] = useState(false);
+  const [mensajes, setMensajes] = useState([
+    { id: 'bienvenida', autor: 'bot', texto: '¡Hola! ¿En qué te puedo ayudar?' }
+  ]);
+  const [texto, setTexto] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const ultimoMensajeRef = useRef(null);
 
-  // Consumimos los platos del servidor local al cargar la pantalla
   useEffect(() => {
-    const obtenerMenuServidor = async () => {
-      try {
-        setErrorConexion('');
-        const respuesta = await axios.get('http://localhost:5000/api/products');
-        if (respuesta.data.success) {
-          setProductos(respuesta.data.data);
-        }
-      } catch (err) {
-        console.error("Error al conectar el recomendador con el backend:", err);
-        setErrorConexion('⚠️ No se pudo conectar con el sistema de IA local. Verifica que el Backend esté encendido.');
-      }
-    };
-    obtenerMenuServidor();
-  }, []);
+    const ventanaChat = ultimoMensajeRef.current?.parentElement;
+    ventanaChat?.scrollTo({
+      top: ventanaChat.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, [mensajes, cargando, abierto]);
 
-  const handleRecommend = (e) => {
+  async function manejarEnvio(e) {
     e.preventDefault();
-    setError('');
-    const maxBudget = Number(budget);
 
-    if (!objective) {
-      setError('Selecciona tu objetivo nutricional.');
-      return;
-    }
-    if (!budget.trim() || !Number.isFinite(maxBudget) || maxBudget <= 0) {
-      setError('Ingresa un presupuesto válido mayor que cero.');
+    if (!texto.trim() || cargando) {
       return;
     }
 
-    // Ejecución nativa del algoritmo experto cruzando los requerimientos con la data de tu servidor local
-    const filtered = productos.filter(
-      (item) => item.objective === objective && item.price <= maxBudget
-    );
-    
-    setRecommendations(filtered);
-    setSearched(true);
-  };
+    const mensaje = texto.trim();
+    const mensajeId = `${Date.now()}-usuario`;
+    const nuevoMensaje = {
+      id: mensajeId,
+      autor: 'usuario',
+      texto: mensaje
+    };
+    const historial = mensajes
+      .filter((item) => item.id !== 'bienvenida' && item.tipo !== 'error')
+      .map(({ autor, texto: textoMensaje }) => ({ autor, texto: textoMensaje }));
 
-  const formatPrice = (price) => `$${price.toLocaleString('es-CO')} COP`;
+    setMensajes((prev) => [...prev, nuevoMensaje]);
+    setTexto('');
+    setCargando(true);
+
+    try {
+      const respuestaHttp = await fetch('http://localhost:5000/api/ia/consultar-guia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensaje, historial })
+      });
+      const datos = await respuestaHttp.json();
+
+      if (!respuestaHttp.ok) {
+        throw new Error(datos.error || 'No se pudo obtener una respuesta del asistente.');
+      }
+
+      if (typeof datos.respuesta !== 'string' || !datos.respuesta.trim()) {
+        throw new Error('El asistente devolvió una respuesta vacía.');
+      }
+
+      const respuestaBot = {
+        id: `${Date.now()}-bot`,
+        autor: 'bot',
+        texto: datos.respuesta
+      };
+
+      setMensajes((prev) => [...prev, respuestaBot]);
+    } catch (error) {
+      console.error('Error al enviar el mensaje al asistente:', error);
+      setMensajes((prev) => [
+        ...prev.map((item) =>
+          item.id === mensajeId ? { ...item, tipo: 'error' } : item
+        ),
+        {
+          id: `${Date.now()}-error`,
+          autor: 'bot',
+          texto: 'No pude responder en este momento. Verifica que el backend esté activo e inténtalo de nuevo.',
+          tipo: 'error'
+        }
+      ]);
+    } finally {
+      setCargando(false);
+    }
+  }
 
   return (
-    <div className="recommender-page" style={{ backgroundImage: `url(${imgFondoRecomendador})` }}>
-      <div aria-hidden="true" className="recommender-overlay" />
-      
+    <div className="recommender-page">
       <main className="recommender-container">
-        <h1 style={{ textAlign: 'center', marginBottom: '0.8rem', fontSize: 'clamp(2rem, 6vw, 3rem)', color: 'var(--white)', textShadow: '0 2px 10px rgba(0,0,0,0.4)' }}>
-          Asesoría de Nutrición IA
-        </h1>
-        
-        <p style={{ textAlign: 'center', marginBottom: '2.5rem', fontFamily: 'var(--font-nav)', color: 'var(--blue-light)', fontSize: '1.05rem', fontWeight: '500', textShadow: '0 1px 5px rgba(0,0,0,0.4)' }}>
-          Cuéntanos tus metas del día y nuestro sistema seleccionará opciones del menú que se ajusten a tus preferencias y presupuesto en Cartagena.
+        <h1 className="recommender-title">Asesoría de Nutrición IA</h1>
+        <p className="recommender-intro">
+          Pregúntale a nuestro Coach Nutricional por opciones saludables de PerfectFit Bowl en Cartagena.
         </p>
 
-        {/* Alerta si el servidor del backend estuviera apagado */}
-        {errorConexion && (
-          <div className="login-error-box" style={{ marginBottom: '2rem', textAlign: 'center' }}>
-            {errorConexion}
-          </div>
-        )}
-
-        <form onSubmit={handleRecommend} className="recommender-glass-form">
-          <div style={{ marginBottom: '2rem' }}>
-            <label htmlFor="nutrition-objective" style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontFamily: 'var(--font-nav)', color: 'var(--text-dark)', fontSize: '1.05rem' }}>
-              ¿Cuál es tu objetivo nutricional de hoy?
-            </label>
-            <select
-              id="nutrition-objective"
-              value={objective}
-              onChange={(e) => {
-                setObjective(e.target.value);
-                setSearched(false);
-                setError('');
-              }}
-              required
-              style={{ width: '100%', padding: '1rem', borderRadius: '14px', border: '1px solid rgba(0, 0, 0, 0.12)', fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'var(--text-dark)', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+        <section className="chat-panel" aria-label="Chat de nutrición">
+          <div className="chat-header">
+            <div>
+              <h2>Coach Nutricional</h2>
+              <p>Tu asistente de PerfectFit Bowl</p>
+            </div>
+            <button
+              type="button"
+              className="chat-toggle"
+              onClick={() => setAbierto((prev) => !prev)}
+              aria-expanded={abierto}
+              aria-controls="chat-contenido"
             >
-              <option value="">-- Selecciona un objetivo --</option>
-              <option value="energia">⚡ Tener energía para entrenar (Pre-Entreno)</option>
-              <option value="recuperacion">🏆 Apoyar la recuperación después de entrenar</option>
-              <option value="saciedad">🍳 Sentirme satisfecho (Snacks / Desayunos)</option>
-            </select>
+              {abierto ? 'Cerrar chat' : 'Abrir chat'}
+            </button>
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <label htmlFor="nutrition-budget" style={{ display: 'block', marginBottom: '0.8rem', fontWeight: '700', fontFamily: 'var(--font-nav)', color: 'var(--text-dark)', fontSize: '1.05rem' }}>
-              ¿Cuál es tu presupuesto máximo disponible (COP)?
-            </label>
-            <input
-              id="nutrition-budget"
-              type="number"
-              min="1"
-              step="1"
-              value={budget}
-              onChange={(e) => {
-                setBudget(e.target.value);
-                setSearched(false);
-                setError('');
-              }}
-              placeholder="Ej. 25000"
-              required
-              style={{ width: '100%', padding: '1rem', borderRadius: '14px', border: '1px solid rgba(0, 0, 0, 0.12)', fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'var(--text-dark)', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
-            />
-          </div>
-
-          {error && (
-            <p role="alert" style={{ color: '#9b1c31', fontWeight: '700', marginBottom: '1.25rem' }}>
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            className="btn"
-            style={{ width: '100%', padding: '1rem', borderRadius: '30px', fontWeight: '700', fontFamily: 'var(--font-nav)', background: 'linear-gradient(135deg, var(--rose-dark) 0%, var(--rose-medium) 100%)', color: 'var(--white)', border: 'none', cursor: 'pointer', boxShadow: '0 6px 18px rgba(235, 154, 192, 0.45)', transition: 'transform 0.2s ease' }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            Generar Recomendación Inteligente
-          </button>
-        </form>
-
-        {searched && (
-          <section className="recommendation-results" aria-live="polite" aria-labelledby="recommendation-title">
-            <h2 id="recommendation-title" style={{ marginBottom: '1.5rem', textAlign: 'center', color: 'var(--white)', fontSize: 'clamp(1.7rem, 5vw, 2.2rem)', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-              🎯 Platos recomendados para ti
-            </h2>
-            
-            {recommendations.length > 0 ? (
-              <>
-                <p style={{ color: 'var(--white)', textAlign: 'center', marginBottom: '1.5rem' }}>
-                  Encontramos {recommendations.length} {recommendations.length === 1 ? 'opción' : 'opciones'} dentro de tu presupuesto.
-                </p>
-                <div style={{ display: 'grid', gap: '1.5rem' }}>
-                  {recommendations.map((item) => (
-                    <article key={item.name} className="recommendation-card">
-                      <div className="recommendation-heading">
-                        <h3 style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-dark)', fontFamily: 'var(--font-title)' }}>
-                          {item.name}
-                        </h3>
-                        <span className="recommendation-price">{formatPrice(item.price)}</span>
-                      </div>
-                      <p style={{ margin: 0, fontSize: '0.95rem', color: '#2d3748', lineHeight: 1.7, fontWeight: '500' }}>
-                        {item.description}
-                      </p>
-                    </article>
+          {abierto && (
+            <div id="chat-contenido" className="chat-content">
+              <div className="chat-ventana">
+                <ul className="chat-mensajes" aria-live="polite" aria-relevant="additions">
+                  {mensajes.map((item) => (
+                    <li key={item.id} className={`chat-msg ${item.autor}`}>
+                      {item.texto}
+                    </li>
                   ))}
-                </div>
-              </>
-            ) : (
-              <div className="recommender-alert-box">
-                <p style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>No encontramos opciones para tu presupuesto.</p>
-                <p style={{ margin: 0 }}>Intenta aumentar el monto disponible para encontrar platos que correspondan a tu objetivo.</p>
+                  {cargando && <li className="chat-msg bot">Escribiendo…</li>}
+                </ul>
+                <div ref={ultimoMensajeRef} className="chat-scroll-anchor" aria-hidden="true" />
               </div>
-            )}
-          </section>
-        )}
+
+              <form className="chat-form" onSubmit={manejarEnvio}>
+                <label className="chat-sr-only" htmlFor="chat-texto">
+                  Escribe tu mensaje
+                </label>
+                <input
+                  id="chat-texto"
+                  type="text"
+                  value={texto}
+                  onChange={(e) => setTexto(e.target.value)}
+                  placeholder="Escribe tu pregunta..."
+                  autoComplete="off"
+                  disabled={cargando}
+                />
+                <button type="submit" disabled={cargando || !texto.trim()}>
+                  {cargando ? 'Enviando…' : 'Enviar'}
+                </button>
+              </form>
+            </div>
+          )}
+        </section>
       </main>
     </div>
   );
