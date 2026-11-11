@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Trash2 } from 'lucide-react'; 
 import './App.css';
 
@@ -20,12 +20,6 @@ function ScrollToTop() {
     window.scrollTo(0, 0); // Salto inmediato al tope sin transiciones
   }, [pathname]);
   return null;
-}
-
-function RutaProtegida({ children }) {
-  return localStorage.getItem('token')
-    ? children
-    : <Navigate to="/login" replace />;
 }
 
 function App() {
@@ -156,7 +150,7 @@ function App() {
           <Route path="/recomendador" element={<Recommender />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<RutaProtegida><Admin /></RutaProtegida>} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
       

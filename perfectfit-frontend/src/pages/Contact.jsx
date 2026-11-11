@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // <- 1. IMPORTACIÓN OBLIGATORIA PARA LA CONEXIÓN
 import './Contact.css';
 import imgFondoContacto from '../assets/images/contacto.jpg';
 
@@ -56,17 +55,23 @@ function Contact() {
     
     try {
       // Enviamos el formData directo a tu API local en el puerto 5000
-      const respuesta = await axios.post('http://localhost:5000/api/messages', formData);
-      
-      // Si el backend responde con success: true, activamos tu tarjeta de éxito
-      if (respuesta.data.success) {
-        console.log("¡Datos guardados con éxito en el servidor local!", respuesta.data);
-        setEnviado(true);
-        setFormData({ name: '', email: '', phone: '', message: '' }); // Limpiamos campos
+      const respuesta = await fetch('http://localhost:5000/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || !datos.success) {
+        throw new Error(datos.error || 'No se pudo guardar el mensaje.');
       }
+
+      console.log("¡Datos guardados con éxito en el servidor local!", datos);
+      setEnviado(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
       console.error("Error en la conexión con el servidor modular:", error);
-      setErrorServidor('⚠️ No se pudo enviar el mensaje. Verifica que el servidor del backend esté encendido.');
+      setErrorServidor(error.message || '⚠️ No se pudo enviar el mensaje. Verifica que el servidor del backend esté encendido.');
     }
   };
 

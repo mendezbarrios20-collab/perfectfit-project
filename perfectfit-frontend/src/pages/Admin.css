@@ -194,7 +194,7 @@
   background: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-soft);
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid var(--blue-light);
 }
 
@@ -357,4 +357,133 @@
 
 .btn-action-cancel:hover {
   background-color: #4a5568;
+}
+
+.admin-create-form {
+  background: var(--white);
+  padding: 2rem;
+  border: 1px solid var(--blue-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-create-form-grid,
+.admin-macros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.25rem;
+}
+
+.admin-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.admin-form-field label {
+  color: var(--text-dark);
+  font-family: var(--font-nav);
+  font-weight: 700;
+}
+
+.admin-form-field input,
+.admin-form-field select,
+.admin-form-field textarea {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--blue-dark);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text-dark);
+  font: inherit;
+}
+
+.admin-form-field input:focus,
+.admin-form-field select:focus,
+.admin-form-field textarea:focus {
+  outline: 2px solid var(--rose-dark);
+  outline-offset: 1px;
+}
+
+.admin-form-description {
+  grid-column: 1 / -1;
+}
+
+.admin-form-field textarea {
+  resize: vertical;
+}
+
+.admin-macros-fieldset {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--blue-dark);
+  border-radius: 10px;
+}
+
+.admin-macros-fieldset legend {
+  padding: 0 0.5rem;
+  font-family: var(--font-nav);
+  font-weight: 700;
+}
+
+.admin-create-submit {
+  min-width: 190px;
+}
+
+.admin-create-submit:disabled,
+.btn-action-delete:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.admin-product-notice {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+}
+
+.admin-product-error {
+  color: #9b2c2c;
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+}
+
+.admin-product-success {
+  color: #276749;
+  background: #f0fff4;
+  border: 1px solid #9ae6b4;
+}
+
+.btn-action-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 20px;
+  background: #e53e3e;
+  color: var(--white);
+  font: 700 0.85rem var(--font-nav);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-action-delete:hover:not(:disabled) {
+  background: #c53030;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .admin-create-form {
+    padding: 1.25rem;
+  }
+
+  .admin-macros-fieldset {
+    padding: 1rem;
+  }
+
+  .admin-actions-btn-group {
+    flex-wrap: wrap;
+  }
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // <- Conexión asíncrona oficial con el servidor
 import './Login.css';
 import imgLogoCorporate from '../assets/images/solo-logo.jpg';
 
@@ -27,27 +26,38 @@ function Login() {
     try {
       // Disparamos la petición POST al backend modular en el puerto 5000
       // Enviamos credentials.username como el email que espera el servidor
-      const respuesta = await axios.post('http://localhost:5000/api/auth/login', {
-        email: credentials.username,
-        password: credentials.password
+      const respuesta = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: credentials.username,
+          password: credentials.password
+        })
       });
+      const datos = await respuesta.json();
 
-      // Si el backend valida con éxito las credenciales locales
-      if (respuesta.data.success) {
-        console.log("¡Ingreso exitoso al sistema de gestión!", respuesta.data);
+      if (!respuesta.ok || !datos.success) {
+        throw new Error(datos.error || 'No se pudo iniciar sesión.');
+      }
+
+      if (datos.success) {
+        console.log("¡Ingreso exitoso al sistema de gestión!", datos);
         
         // El backend valida este token al recibir solicitudes de administración.
-        localStorage.setItem('token', respuesta.data.token);
+        localStorage.setItem('token', datos.token);
+        localStorage.setItem('user', JSON.stringify(datos.user));
         
-        const role = respuesta.data.user?.role;
+        const role = datos.user?.role;
         navigate(role === 'admin' ? '/admin' : '/recomendador');
       }
     } catch (err) {
       console.error("Error detectado en el inicio de sesión:", err);
       
       // Capturamos el mensaje de error específico que programamos en tu backend
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
+      if (err instanceof TypeError) {
+        setError('⚠️ Error de conexión con el servidor. Verifica que el backend esté encendido.');
+      } else if (err.message) {
+        setError(err.message);
       } else {
         setError('⚠️ Error de conexión con el servidor. Verifica que el backend esté encendido.');
       }

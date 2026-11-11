@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // <- 1. CORREGIDO: Importación oficial de la librería instalada
 import './Catalog.css';
 
 // Importación de tus imágenes originales
@@ -53,10 +52,14 @@ function Catalog({ alAgregarPlato }) {
     const consultarAPI = async () => {
       try {
         setError('');
-        const respuesta = await axios.get('http://localhost:5000/api/products');
-        if (respuesta.data.success) {
-          setProductos(respuesta.data.data);
+        const respuesta = await fetch('http://localhost:5000/api/products');
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok || !datos.success) {
+          throw new Error(datos.error || 'No se pudo cargar el catálogo.');
         }
+
+        setProductos(datos.data);
       } catch (err) {
         console.error("Error al conectar el catálogo con el servidor:", err);
         setError('⚠️ No se pudieron cargar los platos. Verifica que el servidor del Backend esté activo.');
@@ -98,7 +101,7 @@ function Catalog({ alAgregarPlato }) {
         <div className="catalog-grid">
           {productosFiltrados.map((producto) => {
             const idPlato = producto.id || producto._id;
-            const imagenPlato = mapaImagenesPorNombre[producto.image] || mapaImagenesPorId[idPlato];
+            const imagenPlato = mapaImagenesPorNombre[producto.image] || mapaImagenesPorId[idPlato] || producto.image;
             return (
               <article key={idPlato} className="perfectfit-card">
                 <div className="perfectfit-card-img-wrapper">

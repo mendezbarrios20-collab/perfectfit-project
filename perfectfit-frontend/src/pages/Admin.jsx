@@ -1,9 +1,48 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Trash2, Edit3, Check, X, LogOut } from 'lucide-react';
 import './Admin.css';
 import imgLogoSmall from '../assets/images/solo-logo.jpg';
+
+const formularioProductoInicial = {
+  name: '',
+  price: '',
+  description: '',
+  image: '',
+  category: 'desayunos',
+  objective: 'saciedad',
+  macros: {
+    calories: '',
+    protein: '',
+    carbs: '',
+    fats: ''
+  }
+};
+
+const tieneAccesoAdminLocal = () => {
+  if (!localStorage.getItem('token')) {
+    return false;
+  }
+
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null')?.role === 'admin';
+  } catch {
+    return false;
+  }
+};
+
+const solicitarJson = async (url, opciones = {}) => {
+  const respuesta = await fetch(url, opciones);
+  const datos = await respuesta.json();
+
+  if (!respuesta.ok || datos.success === false) {
+    const error = new Error(datos.error || 'La solicitud no pudo completarse.');
+    error.response = { status: respuesta.status, data: datos };
+    throw error;
+  }
+
+  return datos;
+};
 
 function Admin() {
   const navigate = useNavigate();
@@ -11,10 +50,17 @@ function Admin() {
   const [mensajesMarcando, setMensajesMarcando] = useState(() => new Set());
   const [platos, setPlatos] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [accesoAutorizado] = useState(tieneAccesoAdminLocal);
+  const [formularioProducto, setFormularioProducto] = useState(formularioProductoInicial);
+  const [creandoProducto, setCreandoProducto] = useState(false);
+  const [productosEliminando, setProductosEliminando] = useState(() => new Set());
+  const [errorProducto, setErrorProducto] = useState('');
+  const [exitoProducto, setExitoProducto] = useState('');
 
   // ESTADOS DEL MOTOR DE EDICIÓN EN LÍNEA
   const [editandoId, setEditandoId] = useState(null);
   const [formEditar, setFormEditar] = useState({ name: '', price: '', category: 'desayunos' });
+  const validacionAccesoHecha = useRef(false);
 
   const authConfig = () => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -23,19 +69,62 @@ function Admin() {
   const manejarErrorSesion = useCallback((err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       navigate('/login', { replace: true });
     }
   }, [navigate]);
 
+  const configAutenticacion = () => {
+    const config = authConfig();
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+  };
+
+  const cargarProductos = useCallback(async () => {
+    const datos = await solicitarJson(
+      'http://localhost:5000/api/products',
+      configAutenticacion()
+    );
+    setPlatos(datos.data);
+  }, []);
+
   useEffect(() => {
+    if (validacionAccesoHecha.current) {
+      return;
+    }
+    validacionAccesoHecha.current = true;
+
+    const token = localStorage.getItem('token');
+    let usuario = null;
+
+    try {
+      usuario = JSON.parse(localStorage.getItem('user') || 'null');
+    } catch (error) {
+      console.error('Los datos de usuario guardados no son válidos:', error);
+    }
+
+    if (!token || usuario?.role !== 'admin') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.alert('Acceso no autorizado');
+      navigate('/', { replace: true });
+      return;
+    }
+
     const cargarDatosPanel = async () => {
       try {
-        setCargando(true);
-        const resMensajes = await axios.get('http://localhost:5000/api/messages', authConfig());
-        if (resMensajes.data.success) setMensajes(resMensajes.data.data);
+        const datosMensajes = await solicitarJson(
+          'http://localhost:5000/api/messages',
+          configAutenticacion()
+        );
+        setMensajes(datosMensajes.data);
 
-        const resPlatos = await axios.get('http://localhost:5000/api/products', authConfig());
-        if (resPlatos.data.success) setPlatos(resPlatos.data.data);
+        await cargarProductos();
       } catch (err) {
         console.error("Error al cargar la consola administrativa:", err);
         manejarErrorSesion(err);
@@ -44,16 +133,130 @@ function Admin() {
       }
     };
     cargarDatosPanel();
-  }, [manejarErrorSesion]);
+  }, [cargarProductos, manejarErrorSesion, navigate]);
+
+  const manejarCambioProducto = (e) => {
+    const { name, value } = e.target;
+
+    if (name.startsWith('macros.')) {
+      const macro = name.slice('macros.'.length);
+      setFormularioProducto((actual) => ({
+        ...actual,
+        macros: { ...actual.macros, [macro]: value }
+      }));
+      return;
+    }
+
+    setFormularioProducto((actual) => ({ ...actual, [name]: value }));
+  };
+
+  const crearProducto = async (e) => {
+    e.preventDefault();
+    setErrorProducto('');
+    setExitoProducto('');
+    setCreandoProducto(true);
+
+    const productoNuevo = {
+      ...formularioProducto,
+      name: formularioProducto.name.trim(),
+      price: Number(formularioProducto.price),
+      description: formularioProducto.description.trim(),
+      image: formularioProducto.image.trim(),
+      macros: {
+        calories: Number(formularioProducto.macros.calories),
+        protein: Number(formularioProducto.macros.protein),
+        carbs: Number(formularioProducto.macros.carbs),
+        fats: Number(formularioProducto.macros.fats)
+      }
+    };
+
+    try {
+      const respuesta = await fetch('http://localhost:5000/api/products', {
+        method: 'POST',
+        headers: {
+          ...configAutenticacion().headers,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productoNuevo)
+      });
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || !datos.success) {
+        if (respuesta.status === 401) {
+          manejarErrorSesion({ response: { status: 401 } });
+        }
+        throw new Error(datos.error || 'No se pudo crear el producto.');
+      }
+
+      setFormularioProducto(formularioProductoInicial);
+      setPlatos((actuales) => [...actuales, datos.data]);
+      setExitoProducto('El producto se creó correctamente.');
+
+      try {
+        await cargarProductos();
+      } catch (error) {
+        console.error('El producto se creó, pero no se pudo actualizar la lista:', error);
+        setErrorProducto('El producto se guardó, pero no se pudo actualizar la lista. Recarga el panel.');
+      }
+    } catch (error) {
+      console.error('Error al crear el producto:', error);
+      setErrorProducto(error.message || 'No se pudo conectar con el servidor.');
+    } finally {
+      setCreandoProducto(false);
+    }
+  };
+
+  const eliminarProducto = async (plato) => {
+    if (!window.confirm(`¿Estás segura de que deseas eliminar "${plato.name}" del menú?`)) {
+      return;
+    }
+
+    setErrorProducto('');
+    setExitoProducto('');
+    setProductosEliminando((actuales) => new Set(actuales).add(plato.id));
+
+    try {
+      const respuesta = await fetch(`http://localhost:5000/api/products/${plato.id}`, {
+        method: 'DELETE',
+        headers: {
+          ...configAutenticacion().headers
+        }
+      });
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || !datos.success) {
+        if (respuesta.status === 401) {
+          manejarErrorSesion({ response: { status: 401 } });
+        }
+        throw new Error(datos.error || 'No se pudo eliminar el producto.');
+      }
+
+      setPlatos((actuales) => actuales.filter((producto) => producto.id !== plato.id));
+      if (editandoId === plato.id) {
+        setEditandoId(null);
+      }
+      setExitoProducto('El producto se eliminó correctamente.');
+    } catch (error) {
+      console.error('Error al eliminar el producto:', error);
+      setErrorProducto(error.message || 'No se pudo conectar con el servidor.');
+    } finally {
+      setProductosEliminando((actuales) => {
+        const siguientes = new Set(actuales);
+        siguientes.delete(plato.id);
+        return siguientes;
+      });
+    }
+  };
 
   const handleBorrarMensaje = async (id) => {
     if (window.confirm("¿Estás segura de que deseas eliminar este mensaje?")) {
       try {
-        const respuesta = await axios.delete(`http://localhost:5000/api/messages/${id}`, authConfig());
-        if (respuesta.data.success) {
-          setMensajes(mensajes.filter(msg => msg._id !== id));
-          alert("✨ Mensaje removido con éxito.");
-        }
+        await solicitarJson(
+          `http://localhost:5000/api/messages/${id}`,
+          { ...configAutenticacion(), method: 'DELETE' }
+        );
+        setMensajes((actuales) => actuales.filter((msg) => msg._id !== id));
+        alert("✨ Mensaje removido con éxito.");
       } catch (err) {
         console.error(err);
         manejarErrorSesion(err);
@@ -65,18 +268,21 @@ function Admin() {
     setMensajesMarcando((actuales) => new Set(actuales).add(id));
 
     try {
-      const respuesta = await axios.patch(
+      const datos = await solicitarJson(
         `http://localhost:5000/api/messages/${id}/leer`,
-        {},
-        authConfig()
+        {
+          ...configAutenticacion(),
+          method: 'PATCH',
+          headers: {
+            ...configAutenticacion().headers,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        }
       );
 
-      if (!respuesta.data.success) {
-        throw new Error(respuesta.data.error || 'No se pudo marcar el mensaje como leído.');
-      }
-
       setMensajes((actuales) => actuales.map((msg) => (
-        msg._id === id ? { ...msg, ...respuesta.data.data, read: true } : msg
+        msg._id === id ? { ...msg, ...datos.data, read: true } : msg
       )));
     } catch (err) {
       console.error('Error al marcar el mensaje como leído:', err);
@@ -101,12 +307,22 @@ function Admin() {
 
   const guardarEdicion = async (id) => {
     try {
-      const respuesta = await axios.put(`http://localhost:5000/api/products/${id}`, formEditar, authConfig());
-      if (respuesta.data.success) {
-        setPlatos(platos.map(p => p.id === id ? { ...p, name: formEditar.name, price: Number(formEditar.price), category: formEditar.category } : p));
-        setEditandoId(null);
-        alert("🥗 ¡Plato actualizado con éxito en el menú!");
-      }
+      await solicitarJson(`http://localhost:5000/api/products/${id}`, {
+        ...configAutenticacion(),
+        method: 'PUT',
+        headers: {
+          ...configAutenticacion().headers,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formEditar)
+      });
+      setPlatos((actuales) => actuales.map((producto) => (
+        producto.id === id
+          ? { ...producto, name: formEditar.name, price: Number(formEditar.price), category: formEditar.category }
+          : producto
+      )));
+      setEditandoId(null);
+      alert("🥗 ¡Plato actualizado con éxito en el menú!");
     } catch (err) {
       console.error(err);
       manejarErrorSesion(err);
@@ -115,14 +331,27 @@ function Admin() {
 
   const cerrarSesion = async () => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout', {}, authConfig());
+      await solicitarJson('http://localhost:5000/api/auth/logout', {
+        ...configAutenticacion(),
+        method: 'POST',
+        headers: {
+          ...configAutenticacion().headers,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      });
     } catch (err) {
       console.error('No se pudo invalidar la sesión en el servidor:', err);
     } finally {
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       navigate('/login', { replace: true });
     }
   };
+
+  if (!accesoAutorizado) {
+    return <div className="admin-loading" role="status">Verificando permisos...</div>;
+  }
 
   if (cargando) return <div className="admin-loading">🔄 Cargando consola de gestión de PerfectFit...</div>;
 
@@ -200,6 +429,76 @@ function Admin() {
         </section>
 
         <section className="admin-section">
+          <h2>Agregar un producto al menú</h2>
+          {errorProducto && <p className="admin-product-notice admin-product-error" role="alert">{errorProducto}</p>}
+          {exitoProducto && <p className="admin-product-notice admin-product-success" role="status">{exitoProducto}</p>}
+
+          <form className="admin-create-form" onSubmit={crearProducto}>
+            <div className="admin-create-form-grid">
+              <div className="admin-form-field">
+                <label htmlFor="producto-name">Nombre</label>
+                <input id="producto-name" name="name" type="text" value={formularioProducto.name} onChange={manejarCambioProducto} required maxLength={100} />
+              </div>
+              <div className="admin-form-field">
+                <label htmlFor="producto-price">Precio (COP)</label>
+                <input id="producto-price" name="price" type="number" value={formularioProducto.price} onChange={manejarCambioProducto} required min="0.01" step="any" />
+              </div>
+              <div className="admin-form-field">
+                <label htmlFor="producto-image">URL de la imagen</label>
+                <input id="producto-image" name="image" type="url" value={formularioProducto.image} onChange={manejarCambioProducto} required placeholder="https://ejemplo.com/imagen.jpg" />
+              </div>
+              <div className="admin-form-field">
+                <label htmlFor="producto-category">Categoría</label>
+                <select id="producto-category" name="category" value={formularioProducto.category} onChange={manejarCambioProducto}>
+                  <option value="desayunos">desayunos</option>
+                  <option value="snacks">snacks</option>
+                  <option value="pre-entreno">pre-entreno</option>
+                  <option value="post-entreno">post-entreno</option>
+                </select>
+              </div>
+              <div className="admin-form-field">
+                <label htmlFor="producto-objective">Objetivo</label>
+                <select id="producto-objective" name="objective" value={formularioProducto.objective} onChange={manejarCambioProducto}>
+                  <option value="saciedad">saciedad</option>
+                  <option value="energia">energia</option>
+                  <option value="recuperacion">recuperacion</option>
+                </select>
+              </div>
+              <div className="admin-form-field admin-form-description">
+                <label htmlFor="producto-description">Descripción</label>
+                <textarea id="producto-description" name="description" value={formularioProducto.description} onChange={manejarCambioProducto} required maxLength={500} rows="3" />
+              </div>
+            </div>
+
+            <fieldset className="admin-macros-fieldset">
+              <legend>Información nutricional</legend>
+              <div className="admin-macros-grid">
+                <div className="admin-form-field">
+                  <label htmlFor="producto-calories">Calorías (kcal)</label>
+                  <input id="producto-calories" name="macros.calories" type="number" value={formularioProducto.macros.calories} onChange={manejarCambioProducto} required min="0" step="any" />
+                </div>
+                <div className="admin-form-field">
+                  <label htmlFor="producto-protein">Proteínas (g)</label>
+                  <input id="producto-protein" name="macros.protein" type="number" value={formularioProducto.macros.protein} onChange={manejarCambioProducto} required min="0" step="any" />
+                </div>
+                <div className="admin-form-field">
+                  <label htmlFor="producto-carbs">Carbohidratos (g)</label>
+                  <input id="producto-carbs" name="macros.carbs" type="number" value={formularioProducto.macros.carbs} onChange={manejarCambioProducto} required min="0" step="any" />
+                </div>
+                <div className="admin-form-field">
+                  <label htmlFor="producto-fats">Grasas (g)</label>
+                  <input id="producto-fats" name="macros.fats" type="number" value={formularioProducto.macros.fats} onChange={manejarCambioProducto} required min="0" step="any" />
+                </div>
+              </div>
+            </fieldset>
+
+            <button type="submit" className="btn btn-primary admin-create-submit" disabled={creandoProducto}>
+              {creandoProducto ? 'Guardando producto...' : 'Agregar producto'}
+            </button>
+          </form>
+        </section>
+
+        <section className="admin-section">
           <h2>🥗 Control de Inventario del Menú ({platos.length} Bowls)</h2>
           <div className="admin-table-wrapper">
             <table className="admin-table">
@@ -243,14 +542,24 @@ function Admin() {
                         )}
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        {esEditando ? (
-                          <div className="admin-actions-btn-group">
-                            <button onClick={() => guardarEdicion(plato.id)} className="btn-action-save" title="Guardar Cambios"><Check size={16} /></button>
-                            <button onClick={cancelarEdicion} className="btn-action-cancel" title="Cancelar"><X size={16} /></button>
-                          </div>
-                        ) : (
-                          <button onClick={() => iniciarEdicion(plato)} className="btn-action-edit" title="Editar Plato"><Edit3 size={16} /> Editar</button>
-                        )}
+                        <div className="admin-actions-btn-group">
+                          {esEditando ? (
+                            <>
+                              <button type="button" onClick={() => guardarEdicion(plato.id)} className="btn-action-save" title="Guardar cambios" aria-label={`Guardar cambios de ${plato.name}`}><Check size={16} /></button>
+                              <button type="button" onClick={cancelarEdicion} className="btn-action-cancel" title="Cancelar edición" aria-label={`Cancelar edición de ${plato.name}`}><X size={16} /></button>
+                            </>
+                          ) : (
+                            <button type="button" onClick={() => iniciarEdicion(plato)} className="btn-action-edit" title="Editar plato"><Edit3 size={16} /> Editar</button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => eliminarProducto(plato)}
+                            className="btn-action-delete"
+                            disabled={productosEliminando.has(plato.id)}
+                          >
+                            <Trash2 size={16} /> {productosEliminando.has(plato.id) ? 'Eliminando...' : 'Eliminar'}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
