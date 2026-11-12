@@ -1,5 +1,6 @@
 .env
 .env.*
 !perfectfit-backend/.env.example
+!perfectfit-frontend/.env.production
 node_modules/
 dist/
