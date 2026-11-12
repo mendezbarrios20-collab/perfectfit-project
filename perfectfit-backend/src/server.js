@@ -9,9 +9,13 @@ import conectarDB from './config/db.js';
 
 // Inicializar la aplicación del servidor Express
 const app = express();
+const origenesPermitidos = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+].filter(Boolean);
 
 // Middlewares globales obligatorios
-app.use(cors());          
+app.use(cors({ origin: origenesPermitidos }));
 app.use(express.json()); 
 
 // Vincular las Rutas Modulares del Sistema

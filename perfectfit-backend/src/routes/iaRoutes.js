@@ -1,32 +1,33 @@
 import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import Product from '../models/Product.js';
 
 const router = express.Router();
 
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const model = ai.getGenerativeModel({
-  model: process.env.GEMINI_MODEL || 'gemini-1.5-flash', // 🟢 Si el .env falla, usa este por defecto
-  systemInstruction: `Eres un Coach Nutricional experto de la marca PerfectFit Bowl en Cartagena. Tu objetivo es asesorar de manera cercana y motivadora en máximo 3 líneas. Cuando sugieras un plato, debes elegirlo ESTRICTAMENTE de este catálogo oficial de la tienda:
-- Overnight Oats de Proteína (Desayuno - 350 kcal, 25g P)
-- Waffles de Yuca y Clara de Huevo (Desayuno - 280 kcal, 18g P)
-- Toast de Masa Madre con Aguacate y Huevo (Desayuno - 420 kcal, 16g P)
-- Bowl de Acaí y Kéfir (Desayuno - 310 kcal, 10g P)
-- Muffins de Huevo, Espinaca y Pavo (Desayuno - 210 kcal, 22g P)
-- Pudín de Chía y Coco con Colágeno (Snack - 180 kcal, 12g P)
-- Bocaditos de Garbanzos Crujientes (Snack - 150 kcal, 7g P)
-- Trufas de Almendra y Matcha (Snack - 190 kcal, 5g P)
-- Barritas Energéticas de Dátiles y Café (Pre-entreno - 240 kcal, 4g P)
-- Arroz Inflado con Mantequilla de Maní y Banano (Pre-entreno - 260 kcal, 6g P)
-- Pancakes de Banano y Avena (Pre-entreno - 320 kcal, 15g P)
-- Smoothie Cremoso de Proteína y Camote (Post-entreno - 380 kcal, 30g P)
-- Bowl de Quinoa, Salmón y Edamame (Post-entreno - 450 kcal, 35g P)
-- Parfait de Yogur Griego y Cerezas Ácidas (Post-entreno - 220 kcal, 24g P)
-- Wrap de Pollo, Hummus y Espinaca (Post-entreno - 390 kcal, 28g P)
-- Arroz Jasmín con Pavo al Curry y Piña (Post-entreno - 410 kcal, 32g P)
+const construirInstruccionSistema = (productos) => {
+  const menuActual = productos.length > 0
+    ? productos.map((producto) => {
+      const { calories, protein, carbs, fats } = producto.macros || {};
+      return [
+        `- ${producto.name}`,
+        `Precio: $${Number(producto.price).toLocaleString('es-CO')} COP`,
+        `Categoría: ${producto.category}`,
+        `Objetivo: ${producto.objective}`,
+        `Descripción: ${producto.description}`,
+        `Macros: ${calories ?? 'No disponibles'} kcal, ${protein ?? 'No disponibles'} g de proteína, ${carbs ?? 'No disponibles'} g de carbohidratos, ${fats ?? 'No disponibles'} g de grasas`
+      ].join(' | ');
+    }).join('\n')
+    : 'El catálogo no tiene productos disponibles en este momento.';
 
-Si el usuario te pide algo que no está en esta lista, recomiéndale el plato de la lista que más se parezca a sus objetivos nutricionales.`
-});
+  return `Eres el Coach Nutricional experto de PerfectFit Bowl, un emprendimiento de Cartagena que ofrece opciones prácticas y saludables organizadas para distintos momentos de la rutina y objetivos de bienestar. Responde en español, con tono cercano, claro y respetuoso. Usa estrictamente lenguaje neutro: nunca supongas el género de la persona ni uses apelativos como "campeón" o "amigo"; puedes decir "hola", "atleta" o hablar directamente en segunda persona. Mantén las respuestas coherentes y útiles, con extensión equilibrada: escribe como máximo un párrafo breve de introducción de hasta 2 líneas; si recomiendas platos, incluye una lista de máximo 2 o 3 opciones en viñetas cortas, indicando solo nombre, precio y un dato clave de sus macros; termina con una pregunta breve. Comparte información nutricional solo cuando esté en el catálogo, no inventes datos y no presentes la orientación como diagnóstico ni reemplazo de un profesional de salud.
+
+Para recomendar productos, usa exclusivamente los que aparecen en este catálogo actualizado de MongoDB. Respeta sus nombres, precios, categorías, objetivos, descripciones y macros. Si el catálogo está vacío o no hay una opción adecuada, dilo con claridad y no inventes productos.
+
+Catálogo actual:
+${menuActual}`;
+};
 
 // Endpoint POST /api/ia/consultar-guia
 router.post('/consultar-guia', async (req, res) => {
@@ -67,6 +68,12 @@ router.post('/consultar-guia', async (req, res) => {
       parts: [{ text: item.texto.trim() }]
     }));
 
+    const productosActuales = await Product.find().lean();
+    const model = ai.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+      systemInstruction: construirInstruccionSistema(productosActuales),
+      generationConfig: { maxOutputTokens: 250 }
+    });
     const chat = model.startChat({ history: historialMapeado });
     const result = await chat.sendMessage(mensaje.trim());
     const respuesta = result.response.text();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Contact.css';
-import imgFondoContacto from '../assets/images/contacto.jpg';
+import imgFondoContacto from '../assets/images/Wrap.avif';
+import { API_URL } from '../config/api';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -54,11 +55,13 @@ function Contact() {
     setErrorServidor(''); // Limpiamos errores previos antes de intentar
     
     try {
-      // Enviamos el formData directo a tu API local en el puerto 5000
-      const respuesta = await fetch('http://localhost:5000/api/messages', {
+      const datosFormulario = Object.fromEntries(
+        Object.entries(formData).map(([campo, valor]) => [campo, valor.trim()])
+      );
+      const respuesta = await fetch(`${API_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(datosFormulario)
       });
       const datos = await respuesta.json();
 
@@ -66,7 +69,6 @@ function Contact() {
         throw new Error(datos.error || 'No se pudo guardar el mensaje.');
       }
 
-      console.log("¡Datos guardados con éxito en el servidor local!", datos);
       setEnviado(true);
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
@@ -108,69 +110,68 @@ function Contact() {
           
           /* Formulario Glassmorphism */
           <form onSubmit={handleSubmit} className="contact-glass-form">
-            
-            {/* Campo: Nombre */}
-            <div className="form-group">
-              <label className="contact-label">Nombre Completo:</label>
-              <input 
-                type="text" 
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Ej. Valeria Méndez"
-                className="contact-input"
-              />
-            </div>
+            <div className="contact-form-grid">
+              <div className="contact-form-column">
+                <div className="form-group">
+                  <label className="contact-label">Nombre Completo:</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Escribe tu nombre y apellido"
+                    className="contact-input"
+                  />
+                </div>
 
-            {/* Campo: Correo */}
-            <div className="form-group">
-              <label className="contact-label">Correo Electrónico:</label>
-              <input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="valeria@example.com"
-                className="contact-input"
-              />
-            </div>
+                <div className="form-group">
+                  <label className="contact-label">Correo Electrónico:</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="Ingresa tu correo de contacto"
+                    className="contact-input"
+                  />
+                </div>
 
-            {/* Campo: Celular */}
-            <div className="form-group">
-              <label className="contact-label">Teléfono Celular:</label>
-              <input 
-                type="tel" 
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                placeholder="Ej. 3001234567"
-                className="contact-input"
-              />
-            </div>
+                <div className="form-group">
+                  <label className="contact-label">Teléfono Celular:</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    placeholder="Número de WhatsApp o celular"
+                    className="contact-input"
+                  />
+                </div>
+              </div>
 
-            {/* Campo: Mensaje */}
-            <div className="form-group-last">
-              <label className="contact-label">Tu Mensaje o Pedido:</label>
-              <textarea 
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows="4"
-                placeholder="Cuéntanos qué productos deseas o tus restricciones alimentarias..."
-                className="contact-textarea"
-              ></textarea>
+              <div className="contact-form-column">
+                <div className="form-group-last">
+                  <label className="contact-label">Tu Mensaje o Pedido:</label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows="4"
+                    placeholder="¿En qué podemos ayudarte hoy? Escribe tu consulta o pedido..."
+                    className="contact-textarea"
+                  ></textarea>
+                </div>
+              </div>
             </div>
 
             {/* Botón de Envío */}
             <button 
               type="submit" 
               className="contact-submit-btn"
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
               Enviar Mensaje Seguro
             </button>

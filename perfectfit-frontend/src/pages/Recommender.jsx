@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import './Recommender.css';
+import { API_URL } from '../config/api';
 
 function Recommender() {
-  const [abierto, setAbierto] = useState(false);
+  const [abierto, setAbierto] = useState(true);
   const [mensajes, setMensajes] = useState([
     { id: 'bienvenida', autor: 'bot', texto: '¡Hola! ¿En qué te puedo ayudar?' }
   ]);
@@ -41,7 +42,7 @@ function Recommender() {
     setCargando(true);
 
     try {
-      const respuestaHttp = await fetch('http://localhost:5000/api/ia/consultar-guia', {
+      const respuestaHttp = await fetch(`${API_URL}/api/ia/consultar-guia`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje, historial })
@@ -131,6 +132,7 @@ function Recommender() {
                   onChange={(e) => setTexto(e.target.value)}
                   placeholder="Escribe tu pregunta..."
                   autoComplete="off"
+                  autoFocus
                   disabled={cargando}
                 />
                 <button type="submit" disabled={cargando || !texto.trim()}>

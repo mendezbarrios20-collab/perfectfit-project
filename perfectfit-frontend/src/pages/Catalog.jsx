@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Catalog.css';
+import { API_URL } from '../config/api';
 
 // Importación de tus imágenes originales
 import imgArrozInflado from '../assets/images/ArrozInflado.jpg';
@@ -52,7 +53,7 @@ function Catalog({ alAgregarPlato }) {
     const consultarAPI = async () => {
       try {
         setError('');
-        const respuesta = await fetch('http://localhost:5000/api/products');
+        const respuesta = await fetch(`${API_URL}/api/products`);
         const datos = await respuesta.json();
 
         if (!respuesta.ok || !datos.success) {
@@ -134,7 +135,6 @@ function Catalog({ alAgregarPlato }) {
                       type="button"
                       className="btn btn-primary card-btn"
                       onClick={() => {
-                        console.log("Añadiendo al carrito:", producto.name);
                         if (alAgregarPlato) {
                           alAgregarPlato(producto); 
                         }

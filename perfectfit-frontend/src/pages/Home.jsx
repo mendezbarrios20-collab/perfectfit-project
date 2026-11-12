@@ -140,7 +140,7 @@ function Home() {
             
             <div className="featured-grid">
               {destacados.map((plato) => (
-                <div key={plato.name} className="featured-card">
+                <div key={plato.id || plato._id || plato.name} className="featured-card">
                   <img src={plato.image} alt={plato.name} className="featured-card-img" />
                   <div className="featured-card-body">
                     <div>

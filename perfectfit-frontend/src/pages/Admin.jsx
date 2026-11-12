@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Trash2, Edit3, Check, X, LogOut } from 'lucide-react';
 import './Admin.css';
 import imgLogoSmall from '../assets/images/solo-logo.jpg';
+import { API_URL } from '../config/api';
 
 const formularioProductoInicial = {
   name: '',
@@ -87,7 +88,7 @@ function Admin() {
 
   const cargarProductos = useCallback(async () => {
     const datos = await solicitarJson(
-      'http://localhost:5000/api/products',
+      `${API_URL}/api/products`,
       configAutenticacion()
     );
     setPlatos(datos.data);
@@ -119,7 +120,7 @@ function Admin() {
     const cargarDatosPanel = async () => {
       try {
         const datosMensajes = await solicitarJson(
-          'http://localhost:5000/api/messages',
+          `${API_URL}/api/messages`,
           configAutenticacion()
         );
         setMensajes(datosMensajes.data);
@@ -171,7 +172,7 @@ function Admin() {
     };
 
     try {
-      const respuesta = await fetch('http://localhost:5000/api/products', {
+      const respuesta = await fetch(`${API_URL}/api/products`, {
         method: 'POST',
         headers: {
           ...configAutenticacion().headers,
@@ -216,7 +217,7 @@ function Admin() {
     setProductosEliminando((actuales) => new Set(actuales).add(plato.id));
 
     try {
-      const respuesta = await fetch(`http://localhost:5000/api/products/${plato.id}`, {
+      const respuesta = await fetch(`${API_URL}/api/products/${plato.id}`, {
         method: 'DELETE',
         headers: {
           ...configAutenticacion().headers
@@ -252,7 +253,7 @@ function Admin() {
     if (window.confirm("¿Estás segura de que deseas eliminar este mensaje?")) {
       try {
         await solicitarJson(
-          `http://localhost:5000/api/messages/${id}`,
+          `${API_URL}/api/messages/${id}`,
           { ...configAutenticacion(), method: 'DELETE' }
         );
         setMensajes((actuales) => actuales.filter((msg) => msg._id !== id));
@@ -269,7 +270,7 @@ function Admin() {
 
     try {
       const datos = await solicitarJson(
-        `http://localhost:5000/api/messages/${id}/leer`,
+        `${API_URL}/api/messages/${id}/leer`,
         {
           ...configAutenticacion(),
           method: 'PATCH',
@@ -307,7 +308,7 @@ function Admin() {
 
   const guardarEdicion = async (id) => {
     try {
-      await solicitarJson(`http://localhost:5000/api/products/${id}`, {
+      await solicitarJson(`${API_URL}/api/products/${id}`, {
         ...configAutenticacion(),
         method: 'PUT',
         headers: {
@@ -331,7 +332,7 @@ function Admin() {
 
   const cerrarSesion = async () => {
     try {
-      await solicitarJson('http://localhost:5000/api/auth/logout', {
+      await solicitarJson(`${API_URL}/api/auth/logout`, {
         ...configAutenticacion(),
         method: 'POST',
         headers: {

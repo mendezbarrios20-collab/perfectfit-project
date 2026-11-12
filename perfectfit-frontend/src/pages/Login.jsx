@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import imgLogoCorporate from '../assets/images/solo-logo.jpg';
+import { API_URL } from '../config/api';
 
 function Login() {
   // Estado local usando tus variables de credenciales originales
@@ -24,13 +25,11 @@ function Login() {
     setError(''); // Limpiamos alertas previas
 
     try {
-      // Disparamos la petición POST al backend modular en el puerto 5000
-      // Enviamos credentials.username como el email que espera el servidor
-      const respuesta = await fetch('http://localhost:5000/api/auth/login', {
+      const respuesta = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: credentials.username,
+          email: credentials.username.trim(),
           password: credentials.password
         })
       });
@@ -41,8 +40,6 @@ function Login() {
       }
 
       if (datos.success) {
-        console.log("¡Ingreso exitoso al sistema de gestión!", datos);
-        
         // El backend valida este token al recibir solicitudes de administración.
         localStorage.setItem('token', datos.token);
         localStorage.setItem('user', JSON.stringify(datos.user));

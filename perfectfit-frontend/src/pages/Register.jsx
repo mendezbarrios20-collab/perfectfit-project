@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import imgLogoCorporate from '../assets/images/solo-logo.jpg';
+import { API_URL } from '../config/api';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ function Register() {
     setCargando(true);
 
     try {
-      const respuesta = await fetch('http://localhost:5000/api/auth/register', {
+      const respuesta = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

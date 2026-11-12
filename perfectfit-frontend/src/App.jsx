@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Trash2 } from 'lucide-react'; 
 import './App.css';
 
@@ -22,13 +22,18 @@ function ScrollToTop() {
   return null;
 }
 
-function App() {
+function AppContent() {
+  const location = useLocation();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [carrito, setCarrito] = useState([]); // Estado del carrito
   const [verCarrito, setVerCarrito] = useState(false); // Estado para abrir/cerrar modal
+  const mostrarCarrito = location.pathname === '/catalogo';
   
   const toggleMenu = () => setMenuAbierto(!menuAbierto);
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setVerCarrito(false);
+  };
 
   // LÓGICA: Agregar plato o incrementar cantidad
   const agregarAlCarrito = (producto) => {
@@ -53,7 +58,7 @@ function App() {
   const precioTotal = carrito.reduce((acc, item) => acc + (item.price * item.cantidad), 0);
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       
       {/* Navbar Superior con tu diseño original exacto + Carrito Integrado */}
@@ -73,16 +78,6 @@ function App() {
             <NavLink to="/catalogo" onClick={cerrarMenu} className="nav-link-custom">Catálogo</NavLink>
             <NavLink to="/recomendador" onClick={cerrarMenu} className="nav-link-custom">IA Nutrición</NavLink>
             <NavLink to="/contacto" onClick={cerrarMenu} className="nav-link-custom">Contacto</NavLink>
-            
-            <button
-              type="button"
-              onClick={() => setVerCarrito(!verCarrito)}
-              className="nav-carrito-btn nav-link-custom"
-              aria-label="Abrir carrito"
-            >
-              <ShoppingCart size={22} />
-              {totalArticulos > 0 && <span className="contador-carrito">{totalArticulos}</span>}
-            </button>
           </div>
           
           {/* Subgrupo Derecho */}
@@ -92,53 +87,73 @@ function App() {
         </div>
       </nav>
 
-      {/* VENTANA MODAL FLOTANTE DEL CARRITO */}
-      {verCarrito && (
-        <div className="carrito-modal-overlay" onClick={() => setVerCarrito(false)}>
-          <div className="carrito-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="carrito-header">
-              <h3>🛒 Tu Pedido Fit</h3>
-              <button className="cerrar-carrito-btn" onClick={() => setVerCarrito(false)}><X size={20} /></button>
-            </div>
-            
-            {carrito.length === 0 ? (
-              <p className="carrito-vacio-txt">El carrito está vacío. ¡Explora el menú y añade tus bowls favoritos! 🥗</p>
-            ) : (
-              <>
-                <div className="carrito-items-lista">
-                  {carrito.map((item) => (
-                    <div key={item.id} className="carrito-item-card">
-                      <div className="carrito-item-info">
-                        <h4>{item.name}</h4>
-                        <p>{item.cantidad} x ${item.price.toLocaleString('es-CO')}</p>
+      {mostrarCarrito && (
+        <>
+          <button
+            type="button"
+            className="carrito-flotante"
+            onClick={() => setVerCarrito((actual) => !actual)}
+            aria-label={`Abrir carrito, ${totalArticulos} productos`}
+            aria-expanded={verCarrito}
+            aria-controls="carrito-panel"
+          >
+            <ShoppingCart size={24} />
+            {totalArticulos > 0 && <span className="contador-carrito">{totalArticulos}</span>}
+          </button>
+
+          {/* VENTANA MODAL FLOTANTE DEL CARRITO */}
+          {verCarrito && (
+            <div className="carrito-modal-overlay" onClick={() => setVerCarrito(false)}>
+              <div
+                id="carrito-panel"
+                className="carrito-modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="carrito-header">
+                  <h3>🛒 Tu Pedido Fit</h3>
+                  <button className="cerrar-carrito-btn" onClick={() => setVerCarrito(false)}><X size={20} /></button>
+                </div>
+
+                {carrito.length === 0 ? (
+                  <p className="carrito-vacio-txt">El carrito está vacío. ¡Explora el menú y añade tus bowls favoritos! 🥗</p>
+                ) : (
+                  <>
+                    <div className="carrito-items-lista">
+                      {carrito.map((item) => (
+                        <div key={item.id} className="carrito-item-card">
+                          <div className="carrito-item-info">
+                            <h4>{item.name}</h4>
+                            <p>{item.cantidad} x ${item.price.toLocaleString('es-CO')}</p>
+                          </div>
+                          <button className="eliminar-item-btn" onClick={() => eliminarDelCarrito(item.id)}>
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="carrito-footer">
+                      <div className="carrito-total-fila">
+                        <span>Total estimado:</span>
+                        <strong>${precioTotal.toLocaleString('es-CO')} COP</strong>
                       </div>
-                      <button className="eliminar-item-btn" onClick={() => eliminarDelCarrito(item.id)}>
-                        <Trash2 size={16} />
+                      <button
+                        className="btn btn-primary cta-finalizar-pedido"
+                        onClick={() => {
+                          alert("✨ ¡Tu Pedido Fit ha sido procesado con éxito! Nos comunicaremos contigo para coordinar la entrega en Cartagena.");
+                          setCarrito([]);
+                          setVerCarrito(false);
+                        }}
+                      >
+                        Finalizar Pedido en Cartagena
                       </button>
                     </div>
-                  ))}
-                </div>
-                
-                <div className="carrito-footer">
-                  <div className="carrito-total-fila">
-                    <span>Total estimado:</span>
-                    <strong>${precioTotal.toLocaleString('es-CO')} COP</strong>
-                  </div>
-                  <button 
-                    className="btn btn-primary cta-finalizar-pedido" 
-                    onClick={() => {
-                      alert("✨ ¡Tu Pedido Fit ha sido procesado con éxito! Nos comunicaremos contigo para coordinar la entrega en Cartagena.");
-                      setCarrito([]);
-                      setVerCarrito(false);
-                    }}
-                  >
-                    Finalizar Pedido en Cartagena
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Selector de Pantallas Dinámico */}
@@ -156,6 +171,14 @@ function App() {
       
       {/* Footer Global */}
       <Footer />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
