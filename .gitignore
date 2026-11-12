@@ -1,4 +1,5 @@
 .env
 .env.*
+!perfectfit-backend/.env.example
 node_modules/
 dist/
